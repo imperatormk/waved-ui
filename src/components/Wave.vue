@@ -1,6 +1,8 @@
 <template lang="pug">
-  .flex-row.align-center
-    .w75.flex-col(:style="{'background-color':color}")
+  .flex-row.align-center.text-white
+    .w5
+      span {{ track.instrument }}
+    .w70.flex-col(:style="{'background-color':color}")
       .p10(v-if="loading")
         b-spinner(variant="light" type="grow")
       .w100(ref="wave" @ready="onReady" :id="'wave' + track.id")
@@ -8,7 +10,7 @@
     .w25.flex-row.p5.align-center
       .p5.flex-row.align-center
         .flex-col
-          .flex-row.space-between
+          .flex-row.space-between.text-white
             span L
             span C
             span R
@@ -17,7 +19,7 @@
               b-form-input(type="range" @change="panningChanged" min="-100" max="100" step="20" :value="panning * 100")
         .p10
         .flex-col
-          .flex-row.space-between
+          .flex-row.space-between.text-white
             span 0
             span 50
             span 100

@@ -1,10 +1,10 @@
 import Vue from 'vue';
-import App from './App.vue';
-import router from './router';
-import store from './store';
 import BootstrapVue from 'bootstrap-vue';
+import App from '@/App';
+import router from '@/router';
+import store from '@/store';
 
-import './styles/common.scss';
+import '@/styles/common.scss';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 

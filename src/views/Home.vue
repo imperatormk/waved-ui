@@ -1,12 +1,23 @@
 <template lang="pug">
-  .p15.flex-col(style="background-color:#d371e2")
-    Wave(@ready="onWaveReady" @export="exportAcc" @newseek="$emit('newseek', $event)" @soloed="soloed" v-for="(track, idx) in tracks" :key="track" :regions="regions" :track="{url: track, id: idx}" :eventBus="getEventBus()")
+  .p15.flex-col.text-white(style="background-color:#d371e2")
+    Wave(@ready="onWaveReady" 
+      @export="exportAcc"
+      @newseek="$emit('newseek', $event)"
+      @soloed="soloed"
+      v-for="track in tracks"
+      :key="track.id"
+      :regions="regions"
+      :track="track"
+      :eventBus="getEventBus()")
     .w20.p20(v-if="allReady")
-      b-button(@click.prevent="play") {{ !playing ? 'Play' : 'Pause' }}
-      .p5
-      b-button(@click.prevent="collectData") Prepare
-      .p5
-      b-form-input(type="range" @change="tempoChanged" min="0" max="500" :value="tempo * 100")
+      .p5.flex-row.align-center
+        span Tempo
+        .p10
+        b-form-input(type="range" @change="tempoChanged" min="0" max="500" :value="tempo * 100")
+      .p10
+        b-button(@click.prevent="play") {{ !playing ? 'Play' : 'Pause' }}
+        .p5
+        b-button(@click.prevent="collectData") Prepare
 </template>
 
 <script>
@@ -27,10 +38,15 @@ export default {
     }
   },
   data: () => ({
-    tracks: [
-      'guitartrack',
-      'drumtrack',
-    ],
+    tracks: [{
+      id: 0,
+      instrument: 'Guitar',
+      url: 'guitartrack'
+    }, {
+      id: 1,
+      instrument: 'Drums',
+      url: 'drumtrack'
+    }],
     regions: [],
     tempo: 1,
     prepared: [],
