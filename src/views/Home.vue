@@ -1,6 +1,6 @@
 <template lang="pug">
   .p15.flex-col.text-white(style="background-color:#d371e2")
-    Wave(@ready="onWaveReady" 
+    Wave(@ready="onWaveReady"
       @export="exportAcc"
       @newseek="$emit('newseek', $event)"
       @soloed="soloed"

@@ -35,7 +35,7 @@
 
 <script>
 import WaveSurfer from 'wavesurfer.js'
-import RegionPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js'
+import RegionPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min'
 import colors from '@/data/colors'
 
 export default {
@@ -63,7 +63,7 @@ export default {
       seek: this.newSeek
     }
 
-  	this.$nextTick(() => {
+    this.$nextTick(() => {
       this.wavesurfer = WaveSurfer.create({
         container: `#wave${this.track.id}`,
         waveColor: '#dee2e8',
@@ -128,7 +128,7 @@ export default {
         this.eventBus.$off(event)
       })
     },
-  	togglePlay() {
+    togglePlay() {
       if (this.playing) {
         this.wavesurfer.pause()
       } else {
@@ -169,8 +169,9 @@ export default {
       const tempo = this.wavesurfer.getPlaybackRate()
       const volume = this.wavesurfer.getVolume()
       const mute = this.wavesurfer.getMute()
-      const panning = this.panning
-      const url = this.track.url
+
+      const { panning } = this
+      const { url } = this.track
 
       const data = {
         tempo,
@@ -196,9 +197,8 @@ export default {
       this.$emit('ready')
     },
     updateMute() {
-      const mute = this.mute
-      const solo = this.solo
-      const hasSolo = this.hasSolo
+      const { mute, solo, hasSolo } = this
+
       const value = mute || (hasSolo && !solo)
       this.wavesurfer.setMute(value)
     },

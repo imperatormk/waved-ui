@@ -5,8 +5,7 @@ const http = axios.create({
 })
 
 // 401 response interceptor
-http.interceptors.response.use(response =>
-  response, (error) => {
+http.interceptors.response.use(response => response, (error) => {
   if (error.response.status === 401 && !window.location.href.includes('login')) {
     document.location.href = '/login'
   }
