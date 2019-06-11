@@ -1,14 +1,17 @@
 <template lang="pug">
   div
     .p15.flex-col.text-white(style="background-color:#d371e2" v-if="loaded")
+      h3 {{ song.title }}
+      br
       Wave(@ready="onWaveReady"
         @export="exportAcc"
         @newseek="$emit('newseek', $event)"
         @soloed="soloed"
-        v-for="track in tracks"
+        v-for="(track, idx) in tracks"
         :key="track.id"
         :regions="regions"
         :track="track"
+        :index="idx"
         :eventBus="getEventBus()")
       .w20.p20(v-if="allReady")
         .p5.flex-row.align-center
@@ -26,6 +29,12 @@ import Wave from '@/components/Wave'
 import Api from '@/services/api'
 
 export default {
+  props: {
+    songId: {
+      type: Number,
+      required: true
+    }
+  },
   mounted() {
     const r = false
     if (r) {
@@ -38,12 +47,13 @@ export default {
       })
     }
 
-    this.getTracks()
+    this.getSong()
       .then(() => {
         this.loaded = true
       })
   },
   data: () => ({
+    song: null,
     tracks: [],
     regions: [],
     tempo: 1,
@@ -61,11 +71,12 @@ export default {
     getEventBus() {
       return this
     },
-    getTracks() {
-      const songId = 1
-      return Api.getTracks(songId)
-        .then((tracks) => {
-          this.tracks = tracks
+    getSong() {
+      const songId = this.songId
+      return Api.getSong(songId)
+        .then((song) => {
+          this.song = song
+          this.tracks = song.tracks
         })
     },
     play() {

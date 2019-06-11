@@ -40,6 +40,7 @@ import colors from '@/data/colors'
 
 export default {
   props: {
+    index: Number,
     track: {
       type: Object,
       required: true
@@ -76,7 +77,7 @@ export default {
         minPxPerSec: 1
       })
       this.execSuppressed(() => {})
-      this.wavesurfer.load(`http://localhost:3000/audio?name=${this.track.url}`)
+      this.wavesurfer.load(`http://localhost:7000/audio?name=${this.track.url}`)
       if (this.regions.length) {
         this.wavesurfer.toggleInteraction()
       }
@@ -114,7 +115,7 @@ export default {
   }),
   computed: {
     color() {
-      return colors[this.track.id]
+      return colors[this.index]
     }
   },
   methods: {
