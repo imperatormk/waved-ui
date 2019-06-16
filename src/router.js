@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Song from '@/views/Song';
+import AddSong from '@/views/admin/AddSong';
 
 Vue.use(Router);
 
@@ -21,9 +22,13 @@ export default new Router({
       name: 'song',
       component: Song,
       props: route => ({
-        ...routeParamToNumber(route.params, 'songId'),
-        action: 'editMetadata'
+        ...routeParamToNumber(route.params, 'songId')
       })
+    },
+    {
+      path: '/admin/songs/add',
+      name: 'addSong',
+      component: AddSong
     }
   ]
 });
