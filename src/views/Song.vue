@@ -72,7 +72,7 @@ export default {
       return this
     },
     getSong() {
-      const songId = this.songId
+      const { songId } = this
       return Api.getSong(songId)
         .then((song) => {
           this.song = song

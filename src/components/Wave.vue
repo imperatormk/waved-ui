@@ -77,7 +77,7 @@ export default {
         minPxPerSec: 1
       })
       this.execSuppressed(() => {})
-      this.wavesurfer.load(`http://localhost:7000/audio?name=${this.track.url}`)
+      this.wavesurfer.load(`http://localhost:7000/api/songs/null/tracks/${this.track.url}`)
       if (this.regions.length) {
         this.wavesurfer.toggleInteraction()
       }
