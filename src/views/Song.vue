@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    .p15.flex-col.text-white(style="background-color:#d371e2" v-if="loaded")
+    .p15.flex-col.text-white(v-if="loaded")
       h3 {{ song.title }}
       br
       Wave(@ready="onWaveReady"
