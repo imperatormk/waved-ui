@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Song from '@/views/Song';
+import Songs from '@/views/Songs';
 import AddSong from '@/views/admin/AddSong';
 
 Vue.use(Router);
@@ -24,6 +25,11 @@ export default new Router({
       props: route => ({
         ...routeParamToNumber(route.params, 'songId')
       })
+    },
+    {
+      path: '/songs',
+      name: 'songs',
+      component: Songs
     },
     {
       path: '/admin/songs/add',

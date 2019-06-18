@@ -1,6 +1,10 @@
 import http from './http'
 
 export default {
+  getSongs() {
+    return http.get('/songs')
+      .then(resp => resp.data)
+  },
   getSong(songId) {
     return http.get(`/songs/${songId}`)
       .then(resp => resp.data)
