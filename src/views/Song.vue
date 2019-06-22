@@ -13,11 +13,16 @@
         :track="track"
         :index="idx"
         :eventBus="getEventBus()")
-      .w20.p20(v-if="allReady")
+      .w20.p20
+        .p5.flex-row.align-center
+          span Pitch
+          .p10
+          b-form-select(v-model="pitch" :options="pitches")
         .p5.flex-row.align-center
           span Tempo
           .p10
           b-form-input(type="range" @change="tempoChanged" min="0" max="500" :value="tempo * 100")
+      .w20.p20(v-if="allReady")
         .p10
           b-button(@click.prevent="play") {{ !playing ? 'Play' : 'Pause' }}
           .p5
@@ -47,21 +52,31 @@ export default {
       })
     }
 
-    this.getSong()
-      .then(() => {
-        this.loaded = true
-      })
+    this.fetchData()
   },
   data: () => ({
     song: null,
     tracks: [],
     regions: [],
+    pitch: 0,
     tempo: 1,
     prepared: [],
     readyCount: 0,
+    pitches: [
+      { value: 'm2', text: '-2' },
+      { value: 'm1', text: '-1' },
+      { value: 0, text: 'Normal' },
+      { value: 1, text: '+1' },
+      { value: 2, text: '+2' }
+    ],
     playing: false,
     loaded: false
   }),
+  watch: {
+    pitch() {
+      this.fetchData()
+    }
+  },
   computed: {
     allReady() {
       return this.readyCount === this.tracks.length
@@ -71,9 +86,16 @@ export default {
     getEventBus() {
       return this
     },
+    fetchData() {
+      this.loaded = false
+      this.getSong()
+        .then(() => {
+          this.loaded = true
+        })
+    },
     getSong() {
       const { songId } = this
-      return Api.getSong(songId)
+      return Api.getSong(songId, this.pitch)
         .then((song) => {
           this.song = song
           this.tracks = song.tracks

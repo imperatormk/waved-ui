@@ -5,8 +5,8 @@ export default {
     return http.get('/songs')
       .then(resp => resp.data)
   },
-  getSong(songId) {
-    return http.get(`/songs/${songId}`)
+  getSong(songId, pitch) {
+    return http.get(`/songs/${songId}`, { params: { pitch } })
       .then(resp => resp.data)
   },
   processTracks(id, data) {
