@@ -1,6 +1,6 @@
 <template lang="pug">
   div.text-white
-    h1 Add song
+    h3 Add song
     .p15
       b-form-input(v-model="song.title" placeholder="Title")
       br
@@ -9,7 +9,8 @@
       b-form-input(v-model.number="song.price" type="number" placeholder="Price ($)")
       br
       TrackUpload(@filesChanged="filesChanged")
-      b-button(@click="songSubmitted") Submit
+      br
+      b-button(@click="songSubmitted" variant="primary") Submit
 </template>
 
 <script>

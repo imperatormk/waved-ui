@@ -20,17 +20,17 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
+      path: '/',
+      name: 'home',
+      component: Songs
+    },
+    {
       path: '/songs/:songId',
       name: 'song',
       component: Song,
       props: route => ({
         ...routeParamToNumber(route.params, 'songId')
       })
-    },
-    {
-      path: '/songs',
-      name: 'songs',
-      component: Songs
     },
     {
       path: '/admin',
