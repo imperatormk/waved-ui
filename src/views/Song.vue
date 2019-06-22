@@ -3,30 +3,37 @@
     .p15.flex-col.text-white(v-if="loaded")
       h3 {{ song.title }}
       br
-      Wave(@ready="onWaveReady"
-        @export="exportAcc"
-        @newseek="$emit('newseek', $event)"
-        @soloed="soloed"
-        v-for="(track, idx) in tracks"
-        :key="track.id"
-        :regions="regions"
-        :track="track"
-        :index="idx"
-        :eventBus="getEventBus()")
-      .w20.p20
-        .p5.flex-row.align-center
-          span Pitch
+      .flex-col(v-if="song.status === 'READY'")
+        Wave(@ready="onWaveReady"
+          @export="exportAcc"
+          @newseek="$emit('newseek', $event)"
+          @soloed="soloed"
+          v-for="(track, idx) in tracks"
+          :key="track.id"
+          :regions="regions"
+          :track="track"
+          :index="idx"
+          :eventBus="getEventBus()")
+        .w20.p20
+          .p5.flex-row.align-center
+            span Pitch
+            .p10
+            b-form-select(v-model="pitch" :options="pitches")
+          .p5.flex-row.align-center
+            span Tempo
+            .p10
+            b-form-input(type="range" @change="tempoChanged" min="0" max="500" :value="tempo * 100")
+        .w20.p20(v-if="allReady")
           .p10
-          b-form-select(v-model="pitch" :options="pitches")
-        .p5.flex-row.align-center
-          span Tempo
-          .p10
-          b-form-input(type="range" @change="tempoChanged" min="0" max="500" :value="tempo * 100")
-      .w20.p20(v-if="allReady")
+            b-button(@click.prevent="play") {{ !playing ? 'Play' : 'Pause' }}
+            .p5
+            b-button(@click.prevent="collectData") Prepare
+      .flex-col(v-else-if="song.status === 'PREPARING'")
         .p10
-          b-button(@click.prevent="play") {{ !playing ? 'Play' : 'Pause' }}
-          .p5
-          b-button(@click.prevent="collectData") Prepare
+        b-alert(show variant="warning") Song not ready yet, please try again in a bit.
+      .flex-col(v-else-if="song.status === 'FAILED'")
+        .p10
+        b-alert(show variant="error") Song is corrupted, please contact admin.
 </template>
 
 <script>
