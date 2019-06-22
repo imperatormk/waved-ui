@@ -1,7 +1,7 @@
 <template lang="pug">
   div.text-white
     h3 Add song
-    .p15
+    b-card.p15
       b-form-input(v-model="song.title" placeholder="Title")
       br
       b-form-input(v-model="song.artist" placeholder="Artist")

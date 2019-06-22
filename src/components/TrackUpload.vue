@@ -1,5 +1,5 @@
 <template lang="pug">
-  .track-upload
+  .track-upload.font-black
     .flex-column.align-center
       label
         form(ref="fileform")
@@ -123,7 +123,6 @@ export default {
     padding: 10px;
     text-transform: uppercase;
     background-color: #CCC;
-    color: white;
     font-weight: bold;
     margin-top: 20px;
   }

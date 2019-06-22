@@ -1,5 +1,5 @@
 <template lang="pug">
-  b-navbar(toggleable="lg" variant="light")
+  b-navbar(toggleable="lg" variant="light" sticky)
     b-navbar-brand(:to="{ name: 'home' }") Waved
     b-navbar-toggle(target="nav-collapse")
 

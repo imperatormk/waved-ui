@@ -1,25 +1,33 @@
 <template lang="pug">
-  div.text-white
-    h3 Admin panel
-    .p15
-      b-button(@click="gotoAddSong" variant="light") Add new song
-    .p15.flex-col(v-if="loaded")
-      b-table(
-        id="song-table"
-        :items="songs"
-        :per-page="pagination.size"
-        :current-page="currentPage"
-        show-empty
-        small
-      )
-        template(slot="empty" slot-scope="scope")
-          h5 Nothing to see here... {{ scope.emptyText }}
-      b-pagination(
-        v-model="currentPage"
-        :total-rows="totalElements"
-        :per-page="pagination.size"
-        aria-controls="song-table"
-      )
+  div
+    div.text-white
+      h3 Admin panel
+    br
+    b-card
+      .flex-row.space-between.align-center(slot="header")
+        span Songs
+        b-button(@click="gotoAddSong" variant="primary") Add new song
+      .flex-col
+        b-table(
+          id="song-table"
+          :items="songs"
+          :busy="!loaded"
+          :per-page="pagination.size"
+          :current-page="currentPage"
+          :fields="fields"
+          show-empty
+          small
+        )
+          template(slot="empty")
+            h5 Nothing to see here...
+          template(slot="table-busy")
+            h5 Loading...
+        b-pagination(
+          v-model="currentPage"
+          :total-rows="totalElements"
+          :per-page="pagination.size"
+          aria-controls="song-table"
+        )
 </template>
 
 <script>
@@ -36,6 +44,7 @@ export default {
     },
     currentPage: 1,
     totalElements: 0,
+    fields: ['title', 'artist', 'status'],
     songs: [],
     loaded: false
   }),
