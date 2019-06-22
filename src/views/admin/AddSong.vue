@@ -4,6 +4,10 @@
     .p20
       b-form-input(v-model="song.title" placeholder="Title")
       br
+      b-form-input(v-model="song.artist" placeholder="Artist")
+      br
+      b-form-input(v-model.number="song.price" type="number" placeholder="Price ($)")
+      br
       TrackUpload(@filesChanged="filesChanged")
       b-button(@click="songSubmitted") Submit
 </template>
@@ -20,15 +24,17 @@ export default {
   methods: {
     filesChanged(tracks) {
       this.tracks = tracks
-      console.log(this.tracks.find)
     },
     songSubmitted() {
       const songTitle = this.song.title && this.song.title.trim()
+      const songArtist = this.song.artist && this.song.artist.trim()
+      const songPrice = this.song.price > 0
+
       const tracksValid = this.tracks.length &&
         !this.tracks.find(track => !track.metadata.instrument)
-      console.log(songTitle, tracksValid)
 
-      if (!songTitle || !tracksValid) return
+      if (!songTitle || !songArtist || !songPrice || !tracksValid) return
+
       const { song, tracks } = this
       const reqObj = { song, tracks }
       Api.postSong(reqObj)

@@ -14,27 +14,33 @@ export default {
       .then(resp => resp.data)
   },
   postSong(obj) {
-    const formData = new FormData()
+    const { song, tracks } = obj
 
-    // obj.tracks.forEach((fileObj, index) => {
-    //   const { file } = fileObj
-    //   formData.append(`track-${index}`, file)
-    // })
-    const tracks = obj.tracks.map((fileObj, index) => {
-      const { file } = fileObj
-      return file
-    })
-    formData.append('tracks', tracks)
+    return http.post('/songs', song)
+      .then(resp => resp.data)
+      .then((songResult) => {
+        const songId = songResult.id
 
-    const data = {
-      song: obj.song,
-      tracks: obj.tracks.map(track => track.metadata)
-    }
-    formData.append('data', JSON.stringify(data))
+        const trackPromises = tracks.map((track) => {
+          const formData = new FormData()
 
-    return fetch('/api/songs', {
-      method: 'POST',
-      body: formData
-    })
+          formData.append('track', track.file)
+          formData.append('metadata', JSON.stringify(track.metadata))
+    
+          return fetch(`/api/songs/${songId}/tracks`, {
+            method: 'POST',
+            body: formData
+          })
+          .then(resp => resp.json())
+        })
+
+        return Promise.all(trackPromises)
+          .then((trackResults) => {
+            return {
+              song: songResult,
+              tracks: trackResults
+            }
+          })
+      })
   },
 }
