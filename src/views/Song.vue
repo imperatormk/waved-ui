@@ -1,6 +1,6 @@
 <template lang="pug">
-  div
-    .p15.flex-col.text-white(v-if="loaded")
+  div.text-white
+    .flex-col(v-if="loaded")
       h3 {{ song.title }}
       br
       .flex-col(v-if="song.status === 'READY'")

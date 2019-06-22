@@ -1,10 +1,11 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import Song from '@/views/Song';
-import Songs from '@/views/Songs';
-import AddSong from '@/views/admin/AddSong';
+import Vue from 'vue'
+import Router from 'vue-router'
+import Song from '@/views/Song'
+import Songs from '@/views/Songs'
+import Dashboard from '@/views/admin/Dashboard'
+import AddSong from '@/views/admin/AddSong'
 
-Vue.use(Router);
+Vue.use(Router)
 
 const routeParamToNumber = (params, key) => {
   const value = Number.parseInt(params[key], 10)
@@ -32,9 +33,14 @@ export default new Router({
       component: Songs
     },
     {
+      path: '/admin',
+      name: 'dashboard',
+      component: Dashboard
+    },
+    {
       path: '/admin/songs/add',
       name: 'addSong',
       component: AddSong
     }
   ]
-});
+})

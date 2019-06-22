@@ -1,8 +1,8 @@
 import http from './http'
 
 export default {
-  getSongs() {
-    return http.get('/songs')
+  getSongs(params) {
+    return http.get('/songs', { params })
       .then(resp => resp.data)
   },
   getSong(songId, pitch) {
