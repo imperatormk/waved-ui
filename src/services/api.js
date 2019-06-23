@@ -26,21 +26,19 @@ export default {
 
           formData.append('track', track.file)
           formData.append('metadata', JSON.stringify(track.metadata))
-    
+
           return fetch(`/api/songs/${songId}/tracks`, {
             method: 'POST',
             body: formData
           })
-          .then(resp => resp.json())
+            .then(resp => resp.json())
         })
 
         return Promise.all(trackPromises)
-          .then((trackResults) => {
-            return {
-              song: songResult,
-              tracks: trackResults
-            }
-          })
+          .then(trackResults => ({
+            song: songResult,
+            tracks: trackResults
+          }))
       })
   },
 }

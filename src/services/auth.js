@@ -17,6 +17,7 @@ const logout = () => {
 const getStoredObj = () => {
   const storedObj = localStorage.getItem(STORAGE_KEY)
   if (storedObj) return JSON.parse(storedObj)
+  return null
 }
 
 const getJwt = () => {

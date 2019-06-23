@@ -31,8 +31,9 @@ export default {
       const songArtist = this.song.artist && this.song.artist.trim()
       const songPrice = this.song.price > 0
 
-      const tracksValid = this.tracks.length &&
-        !this.tracks.find(track => !track.metadata.instrument)
+      const hasTracks = !!this.tracks.length
+      const allTracksHaveInstrument = !this.tracks.find(track => !track.metadata.instrument)
+      const tracksValid = hasTracks && allTracksHaveInstrument
 
       if (!songTitle || !songArtist || !songPrice || !tracksValid) return
 

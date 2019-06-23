@@ -36,7 +36,7 @@ export default {
 
       this.loginError = ''
       this.$store.dispatch('authentication/login', { username, password })
-        .then((user) => {
+        .then(() => {
           this.$router.push({ name: 'home' })
         })
         .catch((err) => {
