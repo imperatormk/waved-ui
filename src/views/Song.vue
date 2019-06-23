@@ -94,7 +94,10 @@ export default {
       return this
     },
     fetchData() {
+      this.readyCount = 0
+      this.playing = false
       this.loaded = false
+
       this.getSong()
         .then(() => {
           this.loaded = true

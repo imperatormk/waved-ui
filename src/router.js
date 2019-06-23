@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+
+import Login from '@/views/Login'
 import Song from '@/views/Song'
 import Songs from '@/views/Songs'
 import Dashboard from '@/views/admin/Dashboard'
@@ -23,6 +25,11 @@ export default new Router({
       path: '/',
       name: 'home',
       component: Songs
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
     },
     {
       path: '/songs/:songId',
