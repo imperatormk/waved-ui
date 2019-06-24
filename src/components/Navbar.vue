@@ -8,8 +8,9 @@
         b-nav-item(href="#") Link A
         b-nav-item(href="#") Link B
       b-navbar-nav.ml-auto
-        b-nav-item-dropdown(v-if="loggedUser" right)
+        b-nav-item-dropdown(v-if="loggedIn" right)
           template(slot="button-content") {{ loggedUser.username }}
+          b-dropdown-item(v-if="loggedUser.isAdmin" :to="{ name: 'adminDashboard' }") Admin
           b-dropdown-item(@click="logout") Log out
         .flex-row(v-else)
           b-nav-item(:to="{ name: 'login' }") Log in

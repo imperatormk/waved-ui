@@ -3,9 +3,9 @@
     b-card.p15
       b-alert(:show="loggingIn" variant="info") Please wait...
       b-alert(:show="!!loginError" variant="danger") {{ loginError }}
-      b-form-input(v-model="user.username" placeholder="Username")
+      b-form-input(@keyup.enter="login" v-model="user.username" placeholder="Username")
       br
-      b-form-input(v-model="user.password" placeholder="Password" type="password")
+      b-form-input(@keyup.enter="login" v-model="user.password" placeholder="Password" type="password")
       br
       b-button(@click="login" variant="primary") Login
 </template>
