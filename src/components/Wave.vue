@@ -1,11 +1,11 @@
 <template lang="pug">
   b-card
+    .p10(v-if="loading")
+      b-progress(:id="'pb' + track.id" :value="1" :max="1" animated)
     .flex-row.align-center.font-black
       .w5
         font-awesome-icon.fs30(:icon="instrumentIcon")
       .w70.flex-col(:style="{'background-color':color}")
-        .p10(v-if="loading")
-          b-spinner(variant="light" type="grow")
         .w100(ref="wave" @ready="onReady" :id="'wave' + track.id")
       .p10
       .w25.flex-row.p5.align-center
@@ -40,6 +40,11 @@ import RegionPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min'
 import colors from '@/data/colors'
 import instruments from '@/data/instruments'
 
+const changePbColor = (id, color) => {
+  const el = document.querySelector(`#${id} > .progress-bar`)
+  el.style.backgroundColor = color
+}
+
 export default {
   props: {
     index: Number,
@@ -57,6 +62,9 @@ export default {
     }
   },
   mounted() {
+    const pbId = `pb${this.track.id}`
+    changePbColor(pbId, this.color)
+
     const regionConfig = {
       regions: this.regions
     }
