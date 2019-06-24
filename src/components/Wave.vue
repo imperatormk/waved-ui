@@ -1,36 +1,37 @@
 <template lang="pug">
-  .flex-row.align-center.text-white
-    .w5
-      font-awesome-icon.fs30(:icon="instrumentIcon")
-    .w70.flex-col(:style="{'background-color':color}")
-      .p10(v-if="loading")
-        b-spinner(variant="light" type="grow")
-      .w100(ref="wave" @ready="onReady" :id="'wave' + track.id")
-    .p10
-    .w25.flex-row.p5.align-center
-      .p5.flex-row.align-center
-        .flex-col
-          .flex-row.space-between.text-white
-            span L
-            span C
-            span R
-          .flex-row
-            .flex-1
-              b-form-input(type="range" @change="panningChanged" min="-100" max="100" step="20" :value="panning * 100")
-        .p10
-        .flex-col
-          .flex-row.space-between.text-white
-            span 0
-            span 50
-            span 100
-          .flex-row
-            .flex-1
-              b-form-input(type="range" @change="volumeChanged" min="0" max="100" value="100")
+  b-card
+    .flex-row.align-center.font-black
+      .w5
+        font-awesome-icon.fs30(:icon="instrumentIcon")
+      .w70.flex-col(:style="{'background-color':color}")
+        .p10(v-if="loading")
+          b-spinner(variant="light" type="grow")
+        .w100(ref="wave" @ready="onReady" :id="'wave' + track.id")
       .p10
-      .p5.flex-row.justify-end.align-center
-        b-button(@click="toggleMute" :variant="mute ? 'warning' : null") M
-        .p5
-        b-button(@click="newSolo" :variant="solo ? 'danger' : null") S
+      .w25.flex-row.p5.align-center
+        .p5.flex-col.justify-center
+          .flex-col
+            .flex-row.space-between
+              span L
+              span C
+              span R
+            .flex-row
+              .flex-1
+                b-form-input(type="range" @change="panningChanged" min="-100" max="100" step="20" :value="panning * 100")
+          .p10
+          .flex-col
+            .flex-row.space-between
+              span 0
+              span 50
+              span 100
+            .flex-row
+              .flex-1
+                b-form-input(type="range" @change="volumeChanged" min="0" max="100" value="100")
+        .p10
+        .p5.flex-row.justify-end.align-center
+          b-button(@click="toggleMute" :variant="mute ? 'warning' : null") M
+          .p5
+          b-button(@click="newSolo" :variant="solo ? 'danger' : null") S
 </template>
 
 <script>
