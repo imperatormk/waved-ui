@@ -1,5 +1,5 @@
 <template lang="pug">
-  div
+  Layout(title="Register")
     b-card.p15
       b-alert(:show="!!registerError" variant="danger") {{ registerError }}
       b-form-input(v-model="user.username" placeholder="Username")

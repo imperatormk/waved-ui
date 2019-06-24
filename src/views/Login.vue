@@ -1,5 +1,5 @@
 <template lang="pug">
-  div
+  Layout(title="Login")
     b-card.p15
       b-alert(:show="loggingIn" variant="info") Please wait...
       b-alert(:show="!!loginError" variant="danger") {{ loginError }}

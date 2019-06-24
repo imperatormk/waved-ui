@@ -12,7 +12,11 @@ import '@/styles/common.scss'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
+import Layout from '@/components/Layout'
+
 Vue.use(BootstrapVue)
+
+Vue.component('Layout', Layout)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 library.add(fas)

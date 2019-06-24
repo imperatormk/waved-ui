@@ -1,5 +1,5 @@
 <template lang="pug">
-  div
+  Layout
     b-card-group
       b-card(header="Latest songs" no-body)
         b-list-group

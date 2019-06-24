@@ -1,6 +1,5 @@
 <template lang="pug">
-  div.text-white
-    h3 Add song
+  Layout(title="Add song")
     b-alert(:show="!!submitErr" variant="danger") {{ submitErr }}
     b-card.p15
       b-form-input(v-model="song.title" placeholder="Title")

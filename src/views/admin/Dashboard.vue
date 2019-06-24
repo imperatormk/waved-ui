@@ -1,8 +1,5 @@
 <template lang="pug">
-  div
-    div.text-white
-      h3 Admin panel
-    br
+  Layout(title="Admin panel")
     b-card
       .flex-row.space-between.align-center(slot="header")
         span Songs

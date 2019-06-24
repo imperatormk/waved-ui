@@ -1,10 +1,8 @@
 <template lang="pug">
-  div.text-white
+  Layout(:title="song ? song.title : ''")
     .flex-col(v-if="loaded")
-      h3 {{ song.title }}
-      br
       .flex-col(v-if="song.status === 'READY'")
-        Wave(@ready="onWaveReady"
+        Wave.m5(@ready="onWaveReady"
           @export="exportAcc"
           @newseek="$emit('newseek', $event)"
           @soloed="soloed"
