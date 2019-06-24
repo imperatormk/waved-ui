@@ -1,4 +1,4 @@
 export default {
-  'guitar': '',
-  'drums': '',
+  guitar: 'guitar',
+  drums: 'drum',
 }

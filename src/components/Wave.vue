@@ -1,7 +1,7 @@
 <template lang="pug">
   .flex-row.align-center.text-white
     .w5
-      span {{ track.instrument }}
+      font-awesome-icon.fs30(:icon="instrumentIcon")
     .w70.flex-col(:style="{'background-color':color}")
       .p10(v-if="loading")
         b-spinner(variant="light" type="grow")
@@ -37,6 +37,7 @@
 import WaveSurfer from 'wavesurfer.js'
 import RegionPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min'
 import colors from '@/data/colors'
+import instruments from '@/data/instruments'
 
 export default {
   props: {
@@ -116,6 +117,10 @@ export default {
   computed: {
     color() {
       return colors[this.index]
+    },
+    instrumentIcon() {
+      const { instrument } = this.track
+      return instruments[instrument]
     }
   },
   methods: {
