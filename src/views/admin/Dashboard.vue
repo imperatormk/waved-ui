@@ -13,9 +13,10 @@
           :items="songs"
           :busy="!loaded"
           :per-page="pagination.size"
-          :current-page="currentPage"
+          :current-page="1"
           :fields="fields"
           show-empty
+          hover
           small
         )
           template(slot="empty")
@@ -23,10 +24,12 @@
           template(slot="table-busy")
             h5 Loading...
         b-pagination(
-          v-model="currentPage"
+          v-if="totalElements > pagination.size"
+          v-model="pagination.page"
           :total-rows="totalElements"
           :per-page="pagination.size"
           aria-controls="song-table"
+          @change="fetchData"
         )
 </template>
 
@@ -42,7 +45,6 @@ export default {
       page: 1,
       size: 10
     },
-    currentPage: 1,
     totalElements: 0,
     fields: ['title', 'artist', 'status'],
     songs: [],
@@ -52,8 +54,9 @@ export default {
     fetchData() {
       this.loaded = false
       Api.getSongs(this.pagination)
-        .then((songs) => {
-          this.songs = songs
+        .then((resp) => {
+          this.songs = resp.content
+          this.totalElements = resp.totalElements
           this.loaded = true
         })
     },
@@ -63,4 +66,3 @@ export default {
   }
 }
 </script>
-

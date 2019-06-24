@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     b-card-group
-      b-card(header="Songs" no-body)
+      b-card(header="Latest songs" no-body)
         b-list-group
           b-list-group-item(v-for="song in songs" :key="songs.id")
             SongItem(:song="song")
@@ -21,9 +21,9 @@ export default {
   }),
   methods: {
     getSongs() {
-      Api.getSongs()
+      Api.getSongs({ size: 10, order: 'DESC' })
         .then((songs) => {
-          this.songs = songs
+          this.songs = songs.content
         })
     }
   },
