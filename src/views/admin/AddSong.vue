@@ -44,7 +44,7 @@ export default {
 
       Api.postSong(reqObj)
         .then(() => {
-          this.$router.push({ name: 'dashboard' })
+          this.$router.push({ name: 'adminDashboard' })
         })
         .catch((err) => {
           this.submitErr = err.msg
