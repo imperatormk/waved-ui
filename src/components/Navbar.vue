@@ -11,7 +11,9 @@
         b-nav-item-dropdown(v-if="loggedUser" right)
           template(slot="button-content") {{ loggedUser.username }}
           b-dropdown-item(@click="logout") Log out
-        b-nav-item(v-else :to="{ name: 'login' }") Log in
+        .flex-row(v-else)
+          b-nav-item(:to="{ name: 'login' }") Log in
+          b-nav-item(:to="{ name: 'register' }") Register
 </template>
 
 <script>

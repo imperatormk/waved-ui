@@ -41,4 +41,12 @@ export default {
           }))
       })
   },
+  registerUser(userObj) {
+    return http.post(`/accounts/register`, userObj)
+      .then(resp => resp.data)
+      .catch((err) => {
+        const { data } = err.response
+        return Promise.reject(data)
+      })
+  }
 }

@@ -29,10 +29,8 @@
             .p5
             b-button(@click.prevent="collectData") Prepare
       .flex-col(v-else-if="song.status === 'PREPARING'")
-        .p10
         b-alert(show variant="warning") Song not ready yet, please try again in a bit.
       .flex-col(v-else-if="song.status === 'FAILED'")
-        .p10
         b-alert(show variant="error") Song is corrupted, please contact admin.
 </template>
 

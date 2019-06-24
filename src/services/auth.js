@@ -22,12 +22,12 @@ const getStoredObj = () => {
 
 const getJwt = () => {
   const storedObj = getStoredObj()
-  return storedObj.token || null
+  return storedObj ? storedObj.token : null
 }
 
 const getUser = () => {
   const storedObj = getStoredObj()
-  return storedObj.user || null
+  return storedObj ? storedObj.user : null
 }
 
 export default {
