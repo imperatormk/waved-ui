@@ -1,8 +1,10 @@
+const serverUrl = 'http://localhost:7000'
+
 module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target: 'http://18.188.233.81:7000',
+        target: serverUrl,
         secure: false
       }
     }

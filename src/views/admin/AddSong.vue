@@ -1,6 +1,7 @@
 <template lang="pug">
   div.text-white
     h3 Add song
+    b-alert(:show="!!submitErr" variant="danger") {{ submitErr }}
     b-card.p15
       b-form-input(v-model="song.title" placeholder="Title")
       br
@@ -20,7 +21,8 @@ import Api from '@/services/api'
 export default {
   data: () => ({
     song: {},
-    tracks: []
+    tracks: [],
+    submitErr: ''
   }),
   methods: {
     filesChanged(tracks) {
@@ -37,9 +39,17 @@ export default {
 
       if (!songTitle || !songArtist || !songPrice || !tracksValid) return
 
+      this.submitErr = ''
       const { song, tracks } = this
       const reqObj = { song, tracks }
+
       Api.postSong(reqObj)
+        .then(() => {
+          this.$router.push({ name: 'dashboard' })
+        })
+        .catch((err) => {
+          this.submitErr = err.msg
+        })
     }
   },
   components: {

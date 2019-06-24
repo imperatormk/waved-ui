@@ -44,7 +44,7 @@ export default {
 
       this.registerError = ''
       Api.registerUser(userObj)
-        .then((user) => {
+        .then(() => {
           this.$router.push({ name: 'login' })
           // TODO: add an alert here
         })

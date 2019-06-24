@@ -1,4 +1,16 @@
 import http from './http'
+import auth from './auth'
+
+const getAuthHeaders = (opts) => {
+  const options = opts || {}
+  return Promise.resolve(auth.getJwt())
+    .then(token => ({
+      ...options,
+      headers: {
+        Authorization: `JWT ${token}`
+      }
+    }))
+}
 
 export default {
   getSongs(params) {
@@ -9,14 +21,16 @@ export default {
     return http.get(`/songs/${songId}`, { params: { pitch } })
       .then(resp => resp.data)
   },
-  processTracks(id, data) {
-    return http.post(`/audio/${id}`, data)
+  processTracks(songId, data) {
+    return getAuthHeaders()
+      .then(options => http.post(`/songs/${songId}/prepare`, data, options))
       .then(resp => resp.data)
   },
   postSong(obj) {
     const { song, tracks } = obj
 
-    return http.post('/songs', song)
+    return getAuthHeaders()
+      .then(options => http.post('/songs', song, options))
       .then(resp => resp.data)
       .then((songResult) => {
         const songId = songResult.id
@@ -40,9 +54,13 @@ export default {
             tracks: trackResults
           }))
       })
+      .catch((err) => {
+        const { data } = err.response
+        return Promise.reject(data)
+      })
   },
   registerUser(userObj) {
-    return http.post(`/accounts/register`, userObj)
+    return http.post('/accounts/register', userObj)
       .then(resp => resp.data)
       .catch((err) => {
         const { data } = err.response
