@@ -10,7 +10,7 @@
       br
       TrackUpload(@filesChanged="filesChanged")
       br
-      b-button(@click="songSubmitted" variant="primary") Submit
+      b-button(@click="songSubmitted" :disabled="submitting" variant="primary") Submit
 </template>
 
 <script>
@@ -21,7 +21,8 @@ export default {
   data: () => ({
     song: {},
     tracks: [],
-    submitErr: ''
+    submitErr: '',
+    submitting: false
   }),
   methods: {
     filesChanged(tracks) {
@@ -42,12 +43,16 @@ export default {
       const { song, tracks } = this
       const reqObj = { song, tracks }
 
+      this.submitting = true
       Api.postSong(reqObj)
         .then(() => {
           this.$router.push({ name: 'adminDashboard' })
         })
         .catch((err) => {
           this.submitErr = err.msg
+        })
+        .finally(() => {
+          this.submitting = false
         })
     }
   },

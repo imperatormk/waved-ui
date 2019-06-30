@@ -12,20 +12,21 @@
           :track="track"
           :index="idx"
           :eventBus="getEventBus()")
-        .w20.p20
-          .p5.flex-row.align-center
-            span Pitch
-            .p10
-            b-form-select(v-model="pitch" :options="pitches")
-          .p5.flex-row.align-center
-            span Tempo
-            .p10
-            b-form-input(type="range" @change="tempoChanged" min="0" max="500" :value="tempo * 100")
-        .w20.p20(v-if="allReady")
-          .p10
-            b-button(@click.prevent="play") {{ !playing ? 'Play' : 'Pause' }}
-            .p5
-            b-button(@click.prevent="collectData") Prepare
+        .w40.p20
+          b-card
+            .p5.flex-row.align-center
+              span Pitch
+              .p10
+              b-form-select(v-model="pitch" :options="pitches")
+            .p5.flex-row.align-center
+              span Tempo
+              .p10
+              b-form-input(type="range" @change="tempoChanged" min="0" max="500" :value="tempo * 100")
+            br
+            .flex-row(v-if="allReady")
+              b-button(@click.prevent="play") {{ !playing ? 'Play' : 'Pause' }}
+              .p5
+              b-button(@click.prevent="collectData" :disabled="preparing") Prepare
       .flex-col(v-else-if="song.status === 'PREPARING'")
         b-alert(show variant="warning") Song not ready yet, please try again in a bit.
       .flex-col(v-else-if="song.status === 'FAILED'")
@@ -73,6 +74,7 @@ export default {
       { value: 2, text: '+2' }
     ],
     playing: false,
+    preparing: false,
     loaded: false
   }),
   watch: {
@@ -134,9 +136,13 @@ export default {
           tempo: this.tempo
         }
       }
+      this.preparing = true
       Api.processTracks(1, data)
         .then((resp) => {
-          console.log(resp)
+          this.$router.push({ name: 'userDashboard' })
+        })
+        .finally(() => {
+          this.preparing = false
         })
     },
     onWaveReady() {

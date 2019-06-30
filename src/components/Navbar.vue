@@ -10,8 +10,8 @@
       b-navbar-nav.ml-auto
         b-nav-item-dropdown(v-if="loggedIn" right)
           template(slot="button-content") {{ loggedUser.username }}
-          b-dropdown-item(:to="{ name: 'userDashboard' }") Dashboard
           b-dropdown-item(v-if="loggedUser.isAdmin" :to="{ name: 'adminDashboard' }") Admin dashboard
+          b-dropdown-item(:to="{ name: 'userDashboard' }") Dashboard
           b-dropdown-item(@click="logout") Log out
         .flex-row(v-else)
           b-nav-item(:to="{ name: 'login' }") Log in
