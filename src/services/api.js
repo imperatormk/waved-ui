@@ -21,6 +21,11 @@ export default {
     return http.get(`/songs/${songId}`, { params: { pitch } })
       .then(resp => resp.data)
   },
+  getProcessings(params) {
+    return getAuthHeaders({ params })
+      .then(options => http.get('/processings', options))
+      .then(resp => resp.data)
+  },
   processTracks(songId, data) {
     return getAuthHeaders()
       .then(options => http.post(`/songs/${songId}/prepare`, data, options))

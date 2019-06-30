@@ -7,6 +7,7 @@ import Register from '@/views/Register'
 import Song from '@/views/Song'
 import Songs from '@/views/Songs'
 import AdminDashboard from '@/views/admin/AdminDashboard'
+import UserDashboard from '@/views/user/UserDashboard'
 import AddSong from '@/views/admin/AddSong'
 
 Vue.use(Router)
@@ -50,6 +51,11 @@ export default new Router({
       path: '/admin',
       name: 'adminDashboard',
       component: AdminDashboard
+    },
+    {
+      path: '/user',
+      name: 'userDashboard',
+      component: UserDashboard
     },
     {
       path: '/admin/songs/add',

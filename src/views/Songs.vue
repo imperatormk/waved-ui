@@ -5,7 +5,7 @@
         b-list-group
           b-list-group-item(v-for="song in songs" :key="songs.id")
             SongItem(:song="song")
-    h4.text-white(v-if="!songs.length") Currently there are no songs...
+        .fs18.p15(v-if="!songs.length") Nothing to see here...
 </template>
 
 <script>
