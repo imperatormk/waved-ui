@@ -74,7 +74,7 @@ export default {
       this.loaded = false
       Api.getProcessings(this.pagination)
         .then((resp) => {
-          this.processings = resp.content.map((processing) => ({
+          this.processings = resp.content.map(processing => ({
             ...processing,
             _showDetails: false
           }))
@@ -83,12 +83,12 @@ export default {
         })
     },
     downloadProcessing(processing) {
-      const filename = processing.outputFilename
-      console.log(filename)
+      const { id, outputFilename } = processing
+      Api.downloadProcessing(id, outputFilename)
     },
     orderItem(processing) {
-      const processingId = processing.id
-      console.log(processingId)
+      const pcsId = processing.id
+      Api.doit(pcsId)
     }
   }
 }

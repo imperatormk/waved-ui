@@ -1,5 +1,6 @@
 import http from './http'
 import auth from './auth'
+import { saveAs } from 'file-saver'
 
 const getAuthHeaders = (opts) => {
   const options = opts || {}
@@ -71,5 +72,25 @@ export default {
         const { data } = err.response
         return Promise.reject(data)
       })
+  },
+  downloadProcessing(pcsId, filename) {
+    return getAuthHeaders({ responseType: 'blob' })
+      .then((options) => {
+        return http.get(`/processings/${pcsId}/download`, options)
+          .then((response) => {
+            const fileNameHeader = 'x-suggested-filename'
+            const suggestedFileName = response.headers[fileNameHeader] || filename
+            saveAs(response.data, suggestedFileName)
+          })
+          .catch((err) => {
+            const { data } = err.response
+            return Promise.reject(data)
+          })
+      })
+  },
+  doit(pcsId) {
+    return getAuthHeaders()
+      .then(options => http.get(`/processings/${pcsId}/doit`, options))
+      .then(resp => resp.data)
   }
 }
