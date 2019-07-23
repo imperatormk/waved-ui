@@ -37,6 +37,8 @@
 import Wave from '@/components/Wave'
 import Api from '@/services/api'
 
+const REGION_DURATION = 30
+
 export default {
   props: {
     songId: {
@@ -45,17 +47,6 @@ export default {
     }
   },
   mounted() {
-    const r = false
-    if (r) {
-      this.regions.push({
-        start: 10,
-        end: 20,
-        loop: true,
-        dragSelection: false,
-        resizeSelection: false
-      })
-    }
-
     this.fetchData()
   },
   data: () => ({
@@ -85,6 +76,9 @@ export default {
   computed: {
     allReady() {
       return this.readyCount === this.tracks.length
+    },
+    loggedUser() {
+      return this.$store.state.authentication.user
     }
   },
   methods: {
@@ -98,8 +92,24 @@ export default {
 
       this.getSong()
         .then(() => {
+          this.loadRegions()
           this.loaded = true
         })
+    },
+    loadRegions() {
+      const shouldDisplay = !this.loggedUser || !this.loggedUser.isAdmin
+      if (shouldDisplay) {
+        const { duration } = this.song
+        const start = Math.floor(duration / 2)
+
+        this.regions.push({
+          start,
+          end: start + REGION_DURATION,
+          loop: true,
+          dragSelection: false,
+          resizeSelection: false
+        })
+      }
     },
     getSong() {
       const { songId } = this
@@ -138,7 +148,7 @@ export default {
       }
       this.preparing = true
       Api.processTracks(this.songId, data)
-        .then((resp) => {
+        .then(() => {
           this.$router.push({ name: 'userDashboard' })
         })
         .finally(() => {

@@ -6,7 +6,7 @@
       br
       b-form-input(v-model="song.artist" placeholder="Artist")
       br
-      b-form-input(v-model.number="song.price" type="number" placeholder="Price ($)")
+      b-form-input(v-model.number="song.price" type="number" min="0" placeholder="Price ($)")
       br
       TrackUpload(@filesChanged="filesChanged")
       br
