@@ -137,7 +137,7 @@ export default {
         }
       }
       this.preparing = true
-      Api.processTracks(1, data)
+      Api.processTracks(this.songId, data)
         .then((resp) => {
           this.$router.push({ name: 'userDashboard' })
         })

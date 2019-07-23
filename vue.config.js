@@ -1,4 +1,4 @@
-const serverUrl = 'http://localhost:7000'
+const serverUrl = 'http://164.68.104.239:7000'
 
 module.exports = {
   devServer: {
