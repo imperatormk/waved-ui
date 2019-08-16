@@ -1,5 +1,5 @@
 <template lang="pug">
-  Layout(:title="song ? song.title : ''")
+  Layout(:title="song ? `${song.title} (${song.genre})` : ''")
     .flex-col(v-if="loaded")
       .flex-col(v-if="song.status === 'READY'")
         Wave.m5(@ready="onWaveReady"
@@ -21,7 +21,7 @@
             .p5.flex-row.align-center
               span Tempo
               .p10
-              b-form-input(type="range" @change="tempoChanged" min="0" max="500" :value="tempo * 100")
+              b-form-input(type="range" @change="tempoChanged" min="1" max="500" :value="tempo * 100")
             br
             .flex-row(v-if="allReady")
               b-button(@click.prevent="play") {{ !playing ? 'Play' : 'Pause' }}
