@@ -37,8 +37,7 @@
 <script>
 import WaveSurfer from 'wavesurfer.js'
 import RegionPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min'
-import colors from '@/data/colors'
-import instruments from '@/data/instruments'
+import { instruments, colors } from '@/data'
 
 const changePbColor = (id, color) => {
   const el = document.querySelector(`#${id} > .progress-bar`)
@@ -129,7 +128,7 @@ export default {
     },
     instrumentIcon() {
       const { instrument } = this.track
-      return instruments[instrument]
+      return instruments[instrument].icon
     }
   },
   methods: {

@@ -1,4 +1,10 @@
 export default {
-  guitar: 'guitar',
-  drums: 'drum',
+  guitar: {
+    title: 'Guitar',
+    icon: 'guitar'
+  },
+  drums: {
+    title: 'Drums',
+    icon: 'drum'
+  },
 }

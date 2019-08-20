@@ -30,6 +30,18 @@ export default new Router({
       component: Songs
     },
     {
+      path: '/instruments/:instrument',
+      name: 'instruments',
+      component: Songs,
+      props: true
+    },
+    {
+      path: '/genres/:genre',
+      name: 'genres',
+      component: Songs,
+      props: true
+    },
+    {
       path: '/login',
       name: 'login',
       component: Login
