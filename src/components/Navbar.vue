@@ -8,6 +8,20 @@
         b-nav-item(href="#") Link A
         b-nav-item(href="#") Link B
       b-navbar-nav.ml-auto
+        b-nav-item-dropdown(right)
+          template(slot="button-content") Genres
+          b-dropdown-item(v-for="(genre, idx) in Object.keys(genres)"
+            :key="genre"
+            :value="genre"
+            @click="gotoGenre(genre)") {{ genres[genre] }}
+        .p10
+        b-nav-item-dropdown(right)
+          template(slot="button-content") Instruments
+          b-dropdown-item(v-for="(instrument, idx) in Object.keys(instruments)"
+            :key="instrument"
+            :value="instrument"
+            @click="gotoInstrument(instrument)") {{ instruments[instrument].title }}
+        .p10
         b-nav-item-dropdown(v-if="loggedIn" right)
           template(slot="button-content") {{ loggedUser.username }}
           b-dropdown-item(v-if="loggedUser.isAdmin" :to="{ name: 'adminDashboard' }") Admin dashboard
@@ -19,7 +33,13 @@
 </template>
 
 <script>
+import { instruments, genres } from '@/data'
+
 export default {
+  data: () => ({
+    instruments,
+    genres
+  }),
   computed: {
     loggedIn() {
       return this.$store.state.authentication.status.loggedIn
@@ -29,6 +49,12 @@ export default {
     }
   },
   methods: {
+    gotoGenre(genre) {
+      this.$router.push({ name: 'genres', params: { genre } })
+    },
+    gotoInstrument(instrument) {
+      this.$router.push({ name: 'instruments', params: { instrument } })
+    },
     logout() {
       this.$store.dispatch('authentication/logout')
     }

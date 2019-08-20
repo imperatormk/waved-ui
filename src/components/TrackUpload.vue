@@ -16,8 +16,7 @@
                   span Instrument
                   .p5
                   select(v-model="fileObj.metadata.instrument" required)
-                    option(value="guitar") Guitar
-                    option(value="drums") Drums
+                    option(v-for="(instrument, idx) in Object.keys(instruments)" :key="instrument" :value="instrument") {{ instruments[instrument].title }}
                 .flex-row.justify-end.p5
                   b-button(variant="danger"
                     @click.stop.prevent="removeFile(fileObj.metadata.id)"
@@ -26,6 +25,7 @@
 </template>
 
 <script>
+import { instruments, genres } from '@/data'
 
 export default {
   props: {
@@ -33,7 +33,8 @@ export default {
   },
   data: () => ({
     dragAndDropCapable: false,
-    files: []
+    files: [],
+    instruments
   }),
   mounted() {
     if (this.filesProp) this.files = this.filesProp
@@ -64,7 +65,7 @@ export default {
     pushFile(file) {
       const metadata = {
         id: `track-${file.lastModified}`,
-        instrument: 'guitar'
+        instrument: null
       }
 
       this.files.push({
