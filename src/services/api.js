@@ -13,6 +13,38 @@ const getAuthHeaders = (opts) => {
     }))
 }
 
+const promisedXhr = (url, { method, body, id }, onProgress) => {
+  const promise = (resolve, reject) => {
+    const xhr = new XMLHttpRequest()
+    xhr.addEventListener('error', () => {
+      const resp = JSON.parse(xhr.responseText)
+      reject(resp)
+    }, false)
+
+    xhr.onreadystatechange = (e) => {
+      const { readyState, status } = e.currentTarget
+      if (readyState === 4) {
+        const resp = JSON.parse(xhr.responseText)
+        if (status >= 200 && status < 400) {
+          resolve(resp)
+          return
+        }
+        reject(resp)
+      }
+    }
+    if (onProgress) {
+      const onProgressInternal = (e) => {
+        const percentComplete = e.lengthComputable ? e.loaded / e.total * 100 : 0
+        onProgress({ progress: Number(percentComplete.toFixed(1)), track: id })
+      }
+      xhr.upload.addEventListener('progress', onProgressInternal, false)
+    }
+    xhr.open(method, url, true)
+    xhr.send(body)
+  }
+  return new Promise(promise)
+}
+
 export default {
   getSongs(pageData = {}, criteria = {}) {
     return http.get('/songs', { params: { ...pageData, ...criteria } })
@@ -32,7 +64,7 @@ export default {
       .then(options => http.post(`/songs/${songId}/prepare`, data, options))
       .then(resp => resp.data)
   },
-  postSong(obj) {
+  postSong(obj, onProgress) {
     const { song, tracks } = obj
 
     return getAuthHeaders()
@@ -43,15 +75,16 @@ export default {
 
         const trackPromises = tracks.map((track) => {
           const formData = new FormData()
+          const { file, metadata } = track
 
-          formData.append('track', track.file)
-          formData.append('metadata', JSON.stringify(track.metadata))
+          formData.append('track', file)
+          formData.append('metadata', JSON.stringify(metadata))
 
-          return fetch(`/api/songs/${songId}/tracks`, {
+          return promisedXhr(`/api/songs/${songId}/tracks`, {
             method: 'POST',
-            body: formData
-          })
-            .then(resp => resp.json())
+            body: formData,
+            id: metadata.id
+          }, onProgress)
         })
 
         return Promise.all(trackPromises)

@@ -4,9 +4,6 @@
     b-navbar-toggle(target="nav-collapse")
 
     b-collapse(id="nav-collapse" is-nav)
-      b-navbar-nav
-        b-nav-item(href="#") Link A
-        b-nav-item(href="#") Link B
       b-navbar-nav.ml-auto
         b-nav-item-dropdown(right)
           template(slot="button-content") Genres

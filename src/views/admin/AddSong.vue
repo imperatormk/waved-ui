@@ -11,7 +11,7 @@
       br
       b-form-input(v-model.number="song.price" type="number" min="0" placeholder="Price ($)")
       br
-      TrackUpload(@filesChanged="filesChanged")
+      TrackUpload(@filesChanged="filesChanged" :eventBus="getEventBus()")
       br
       b-button(@click="songSubmitted" :disabled="submitting" variant="primary") Submit
 </template>
@@ -35,6 +35,9 @@ export default {
     filesChanged(tracks) {
       this.tracks = tracks
     },
+    getEventBus() {
+      return this
+    },
     songSubmitted() {
       const songTitle = this.song.title && this.song.title.trim()
       const songArtist = this.song.artist && this.song.artist.trim()
@@ -52,7 +55,10 @@ export default {
       const reqObj = { song, tracks }
 
       this.submitting = true
-      Api.postSong(reqObj)
+      const onProgress = ({ track, progress }) => {
+        this.$emit('progress', { progress, track })
+      }
+      Api.postSong(reqObj, onProgress)
         .then(() => {
           this.$router.push({ name: 'adminDashboard' })
         })

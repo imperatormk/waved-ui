@@ -22,14 +22,20 @@
                     @click.stop.prevent="removeFile(fileObj.metadata.id)"
                     color="error"
                     outline) Remove
+                .w100.p5
+                  b-progress(:value="fileObj.progress" animated)
 </template>
 
 <script>
-import { instruments, genres } from '@/data'
+import { instruments } from '@/data'
 
 export default {
   props: {
-    filesProp: Array
+    filesProp: Array,
+    eventBus: {
+      type: Object,
+      required: true
+    }
   },
   data: () => ({
     dragAndDropCapable: false,
@@ -38,23 +44,30 @@ export default {
   }),
   mounted() {
     if (this.filesProp) this.files = this.filesProp
-    this.dragAndDropCapable = this.determineDragAndDropCapable()
-    if (this.dragAndDropCapable) {
-      ['drag', 'dragstart', 'dragend', 'dragover', 'dragenter', 'dragleave', 'drop']
-        .forEach((evt) => {
-          this.$refs.fileform.addEventListener(evt, (e) => {
-            e.preventDefault()
-            e.stopPropagation()
-          })
-        })
-      this.$refs.fileform.addEventListener('drop', (e) => {
-        for (let i = 0; i < e.dataTransfer.files.length; i += 1) {
-          this.pushFile(e.dataTransfer.files[i])
-        }
-      })
-    }
+    this.eventBus.$on('progress', this.onProgress)
+  },
+  destroyed() {
+    this.eventBus.$off('progress')
   },
   methods: {
+    prepareDragNDrop() {
+      this.dragAndDropCapable = this.determineDragAndDropCapable()
+      if (this.dragAndDropCapable) {
+        ['drag', 'dragstart', 'dragend', 'dragover', 'dragenter', 'dragleave', 'drop']
+          .forEach((evt) => {
+            this.$refs.fileform.addEventListener(evt, (e) => {
+              e.preventDefault()
+              e.stopPropagation()
+            })
+          })
+        // TODO: remove the event listener on destroyed
+        this.$refs.fileform.addEventListener('drop', (e) => {
+          for (let i = 0; i < e.dataTransfer.files.length; i += 1) {
+            this.pushFile(e.dataTransfer.files[i])
+          }
+        })
+      }
+    },
     fileBrowsed(e) {
       const file = e.target.files[0]
       if (file) {
@@ -63,15 +76,28 @@ export default {
       }
     },
     pushFile(file) {
+      const nextInstrument = Math.min(Object.keys(instruments).length - 1, this.files.length)
+      const instrument = Object.keys(instruments)[nextInstrument]
       const metadata = {
         id: `track-${file.lastModified}`,
-        instrument: null
+        instrument
       }
 
       this.files.push({
         metadata,
-        file
+        file,
+        progress: 0
       })
+    },
+    removeFile(key) {
+      this.files.splice(key, 1)
+      this.$emit('filesChanged', this.files)
+    },
+    onProgress({ progress, track }) {
+      if (!progress) return
+      const trackObj = this.files.find(file => file.metadata.id === track)
+      if (!trackObj) return
+      trackObj.progress = progress
     },
     determineDragAndDropCapable() {
       const div = document.createElement('div')
@@ -80,10 +106,6 @@ export default {
               && 'FormData' in window
               && 'FileReader' in window
     },
-    removeFile(key) {
-      this.files.splice(key, 1)
-      this.$emit('filesChanged', this.files)
-    }
   }
 }
 </script>
