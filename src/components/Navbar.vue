@@ -4,21 +4,21 @@
     b-navbar-toggle(target="nav-collapse")
 
     b-collapse(id="nav-collapse" is-nav)
-      b-navbar-nav.ml-auto
-        b-nav-item-dropdown(right)
+      .p10
+      b-navbar-nav
+        b-nav-item-dropdown
           template(slot="button-content") Genres
           b-dropdown-item(v-for="(genre, idx) in Object.keys(genres)"
             :key="genre"
             :value="genre"
             @click="gotoGenre(genre)") {{ genres[genre] }}
-        .p10
-        b-nav-item-dropdown(right)
+        b-nav-item-dropdown
           template(slot="button-content") Instruments
           b-dropdown-item(v-for="(instrument, idx) in Object.keys(instruments)"
             :key="instrument"
             :value="instrument"
             @click="gotoInstrument(instrument)") {{ instruments[instrument].title }}
-        .p10
+      b-navbar-nav.ml-auto
         b-nav-item-dropdown(v-if="loggedIn" right)
           template(slot="button-content") {{ loggedUser.username }}
           b-dropdown-item(v-if="loggedUser.isAdmin" :to="{ name: 'adminDashboard' }") Admin dashboard
