@@ -4,7 +4,6 @@
     b-navbar-toggle(target="nav-collapse")
 
     b-collapse(id="nav-collapse" is-nav)
-      .p10
       b-navbar-nav
         b-nav-item-dropdown
           template(slot="button-content") Genres

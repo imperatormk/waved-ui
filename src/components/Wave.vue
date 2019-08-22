@@ -3,8 +3,9 @@
     .p10(v-if="loading")
       b-progress(:id="'pb' + track.id" :value="1" :max="1" animated)
     .flex-row.align-center.font-black
-      .w5
+      .w5.flex-col.align-center.p15-right
         font-awesome-icon.fs30(:icon="instrumentIcon")
+        span {{ instrumentTitle }}
       .w70.flex-col(:style="{'background-color':color}")
         .w100(ref="wave" @ready="onReady" :id="'wave' + track.id")
       .p10
@@ -129,6 +130,10 @@ export default {
     instrumentIcon() {
       const { instrument } = this.track
       return instruments[instrument].icon
+    },
+    instrumentTitle() {
+      const { instrument } = this.track
+      return instruments[instrument].title
     }
   },
   methods: {

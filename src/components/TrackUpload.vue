@@ -138,16 +138,5 @@ export default {
     color: red;
     cursor: pointer;
   }
-  a.submit-button {
-    display: block;
-    margin: auto;
-    text-align: center;
-    width: 200px;
-    padding: 10px;
-    text-transform: uppercase;
-    background-color: #CCC;
-    font-weight: bold;
-    margin-top: 20px;
-  }
 }
 </style>
