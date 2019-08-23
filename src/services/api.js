@@ -119,9 +119,9 @@ export default {
         return Promise.reject(data)
       })
   },
-  doit(pcsId) {
+  orderItem(pcsId) {
     return getAuthHeaders()
-      .then(options => http.get(`/processings/${pcsId}/doit`, options))
+      .then(options => http.get(`/processings/${pcsId}/order`, options))
       .then(resp => resp.data)
   }
 }

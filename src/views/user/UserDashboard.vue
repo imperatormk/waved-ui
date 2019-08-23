@@ -16,13 +16,20 @@
           small
         )
           template(slot="show_details" slot-scope="row")
-            b-button(@click="row.toggleDetails" size="sm") {{ row.detailsShowing ? 'Hide' : 'Show'}} details
+            b-button(@click="row.toggleDetails" size="sm") {{ row.detailsShowing ? 'Hide' : 'Show' }} details
           template(slot="row-details" slot-scope="row")
             b-card
               .flex-row
-                .flex-col
-                  b-button.m5(v-if="row.item.outputFilename" @click="downloadProcessing(row.item)") Download
-                  b-button.m5(v-if="!row.item.orderId" @click="orderItem(row.item)") Pay now
+                .flex-col.m5(v-if="row.item.outputFilename")
+                  span Your track is ready
+                  .p5
+                  b-button(@click="downloadProcessing(row.item)") Download
+                .flex-col.m5(v-if="row.item.status === 'PENDING'")
+                  span Please submit payment to proceed
+                  .p5
+                  b-button(@click="orderItem(row.item)") Order now
+                .flex-col.m5(v-else-if="row.item.status === 'PREPARING'")
+                  span Track is still processing...
                 .flex-1
           template(slot="empty")
             h5 Nothing to see here...
@@ -40,6 +47,11 @@
 
 <script>
 import Api from '@/services/api'
+
+const openInNewTab = (url) => {
+  const win = window.open(url, '_blank')
+  win.focus()
+}
 
 export default {
   created() {
@@ -88,7 +100,13 @@ export default {
     },
     orderItem(processing) {
       const pcsId = processing.id
-      Api.doit(pcsId)
+      Api.orderItem(pcsId)
+        .then((result) => {
+          const { paymentUrl } = result
+          if (paymentUrl) {
+            openInNewTab(paymentUrl)
+          }
+        })
     }
   }
 }
