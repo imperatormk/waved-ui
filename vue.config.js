@@ -7,6 +7,7 @@ module.exports = {
         target: serverUrl,
         secure: false
       }
-    }
+    },
+    disableHostCheck: true  
   }
 };
