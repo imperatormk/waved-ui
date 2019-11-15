@@ -1,7 +1,26 @@
 <template lang="pug">
-  Layout(:title="song ? `${song.title} (${song.genre})` : ''")
+  Layout(:title="song ? `${song.title} (${song.genre})` : ''" :subtitle="song ? `by ${song.artist}` : ''")
     .flex-col(v-if="loaded")
       .flex-col(v-if="song.status === 'READY'")
+        .p10-bot.m5.flex-row.justify-end
+          b-card(no-body)
+            .p5-left.flex-row.m5
+              .flex-row.align-center
+                span Pitch
+                .p5-side
+                b-form-select(v-model="pitch" :options="pitches")
+              .p20-side
+              .flex-row.align-center
+                span Tempo
+                .p5-side
+                b-form-input(type="range" @change="tempoChanged" min="1" max="500" :value="tempo * 100")
+              .p20-side
+              div(v-if="allReady")
+              .flex-row.align-center
+                div
+                  b-button(@click.prevent="play") {{ !playing ? 'Play' : 'Pause' }}
+                .p5-left
+                  b-button(@click.prevent="collectData" :disabled="preparing") Prepare
         Wave.m5(@ready="onWaveReady"
           @export="exportAcc"
           @newseek="$emit('newseek', $event)"
@@ -12,21 +31,6 @@
           :track="track"
           :index="idx"
           :eventBus="getEventBus()")
-        .w40.p20
-          b-card
-            .p5.flex-row.align-center
-              span Pitch
-              .p10
-              b-form-select(v-model="pitch" :options="pitches")
-            .p5.flex-row.align-center
-              span Tempo
-              .p10
-              b-form-input(type="range" @change="tempoChanged" min="1" max="500" :value="tempo * 100")
-            br
-            .flex-row(v-if="allReady")
-              b-button(@click.prevent="play") {{ !playing ? 'Play' : 'Pause' }}
-              .p5
-              b-button(@click.prevent="collectData" :disabled="preparing") Prepare
       .flex-col(v-else-if="song.status === 'PREPARING'")
         b-alert(show variant="warning") Song not ready yet, please try again in a bit.
       .flex-col(v-else-if="song.status === 'FAILED'")

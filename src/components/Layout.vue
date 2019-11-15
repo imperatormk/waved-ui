@@ -4,7 +4,9 @@
     br
     .text-white(v-if="title")
       h3 {{ title }}
-      br
+      .p5-top(v-if="subtitle")
+        h4 {{ subtitle }}
+    br
     slot
 </template>
 
@@ -13,7 +15,8 @@ import Navbar from '@/components/Navbar'
 
 export default {
   props: {
-    title: String
+    title: String,
+    subtitle: String
   },
   components: {
     Navbar

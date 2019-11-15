@@ -1,15 +1,15 @@
 <template lang="pug">
-  b-card
+  b-card(no-body)
     .p10(v-if="loading")
       b-progress(:id="'pb' + track.id" :value="1" :max="1" animated)
     .flex-row.align-center.font-black
-      .w5.flex-col.align-center.p15-right
+      .w8.flex-col.align-center
         font-awesome-icon.fs30(:icon="instrumentIcon")
         span {{ instrumentTitle }}
-      .w70.flex-col(:style="{'background-color':color}")
+      .w72.flex-col(:style="{'background-color':color}")
         .w100(ref="wave" @ready="onReady" :id="'wave' + track.id")
       .p10
-      .w25.flex-row.p5.align-center
+      .w20.flex-row.p5.align-center.space-between
         .p5.flex-col.justify-center
           .flex-col
             .flex-row.space-between
@@ -19,7 +19,6 @@
             .flex-row
               .flex-1
                 b-form-input(type="range" @change="panningChanged" min="-100" max="100" step="20" :value="panning * 100")
-          .p10
           .flex-col
             .flex-row.space-between
               span 0
@@ -28,8 +27,7 @@
             .flex-row
               .flex-1
                 b-form-input(type="range" @change="volumeChanged" min="0" max="100" value="100")
-        .p10
-        .p5.flex-row.justify-end.align-center
+        .p5.flex-col.justify-end.align-center
           b-button(@click="toggleMute" :variant="mute ? 'warning' : null") M
           .p5
           b-button(@click="newSolo" :variant="solo ? 'danger' : null") S
@@ -82,7 +80,7 @@ export default {
         plugins: [
           RegionPlugin.create(regionConfig)
         ],
-        height: 100,
+        height: 70,
         responsive: true,
         minPxPerSec: 1
       })
