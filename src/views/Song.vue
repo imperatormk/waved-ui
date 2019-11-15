@@ -53,7 +53,7 @@ export default {
   mounted() {
     this.fetchData()
     document.body.onkeyup = (e) => {
-      if (e.keyCode == 32) {
+      if (e.keyCode === 32) {
         this.togglePlay()
       }
     }
