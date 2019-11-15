@@ -18,7 +18,7 @@
               div(v-if="allReady")
               .flex-row.align-center
                 div
-                  b-button(@click.prevent="play") {{ !playing ? 'Play' : 'Pause' }}
+                  b-button(@click.prevent="togglePlay") {{ !playing ? 'Play' : 'Pause' }}
                 .p5-left
                   b-button(@click.prevent="collectData" :disabled="preparing") Prepare
         Wave.m5(@ready="onWaveReady"
@@ -52,6 +52,14 @@ export default {
   },
   mounted() {
     this.fetchData()
+    document.body.onkeyup = (e) => {
+      if (e.keyCode == 32) {
+        this.togglePlay()
+      }
+    }
+  },
+  beforeDestroy() {
+    document.body.onkeyup = null
   },
   data: () => ({
     song: null,
@@ -123,7 +131,7 @@ export default {
           this.tracks = song.tracks
         })
     },
-    play() {
+    togglePlay() {
       this.$emit('toggleplay')
       this.playing = !this.playing
     },
