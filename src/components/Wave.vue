@@ -85,7 +85,7 @@ export default {
         minPxPerSec: 1
       })
       this.execSuppressed(() => {})
-      this.wavesurfer.load(`http://164.68.104.239:7000/static/tracks/${this.track.url}`)
+      this.wavesurfer.load(`https://164.68.104.239:7000/static/tracks/${this.track.url}`)
       if (this.regions.length) {
         this.wavesurfer.toggleInteraction()
       }
