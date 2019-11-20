@@ -1,4 +1,4 @@
-const serverUrl = 'https://164.68.104.239:7000'
+const serverUrl = 'https://studiodoblo.de:7000'
 
 module.exports = {
   devServer: {
