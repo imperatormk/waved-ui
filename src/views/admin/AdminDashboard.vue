@@ -11,15 +11,15 @@
           :busy="!loaded"
           :per-page="pagination.size"
           :current-page="1"
-          :fields="fields"
+          :fields="songFields"
           show-empty
           hover
           small
         )
           template(slot="empty")
-            h5 Nothing to see here...
+            span Nothing to see here...
           template(slot="table-busy")
-            h5 Loading...
+            span Loading...
         b-pagination(
           v-if="totalElements > pagination.size"
           v-model="pagination.page"
@@ -28,10 +28,42 @@
           aria-controls="song-table"
           @change="fetchData"
         )
+    .m10
+    b-card
+      .flex-row.space-between.align-center(slot="header")
+        span Genres
+        b-button(@click="newGenreVisible=!newGenreVisible" variant="primary") Add new genre
+      .p20-bot(v-if="newGenreVisible")
+        NewGenre(@saved="fetchData")
+      .flex-col
+        b-table(
+          id="genre-table"
+          :items="genres"
+          :busy="!loaded"
+          :per-page="pagination.size"
+          :current-page="1"
+          :fields="genreFields"
+          show-empty
+          hover
+          small
+        )
+          template(slot="empty")
+            span Nothing to see here...
+          template(slot="table-busy")
+            span Loading...
+        b-pagination(
+          v-if="totalElements > pagination.size"
+          v-model="pagination.page"
+          :total-rows="totalElements"
+          :per-page="pagination.size"
+          aria-controls="genre-table"
+          @change="fetchData"
+        )
 </template>
 
 <script>
 import Api from '@/services/api'
+import NewGenre from '@/components/admin/NewGenre'
 
 export default {
   created() {
@@ -43,8 +75,11 @@ export default {
       size: 10
     },
     totalElements: 0,
-    fields: ['title', 'artist', 'status'],
+    songFields: ['title', 'artist', 'status'],
+    genreFields: ['name'],
     songs: [],
+    genres: [],
+    newGenreVisible: false,
     loaded: false
   }),
   methods: {
@@ -60,6 +95,9 @@ export default {
     gotoAddSong() {
       this.$router.push({ name: 'addSong' })
     }
+  },
+  components: {
+    NewGenre
   }
 }
 </script>

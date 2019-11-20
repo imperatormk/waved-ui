@@ -46,6 +46,10 @@ const promisedXhr = (url, { method, body, id }, onProgress) => {
 }
 
 export default {
+  getGenres() {
+    return http.get('/genres')
+      .then(resp => resp.data)
+  },
   getSongs(pageData = {}, criteria = {}) {
     return http.get('/songs', { params: { ...pageData, ...criteria } })
       .then(resp => resp.data)
@@ -62,6 +66,11 @@ export default {
   processTracks(songId, data) {
     return getAuthHeaders()
       .then(options => http.post(`/songs/${songId}/prepare`, data, options))
+      .then(resp => resp.data)
+  },
+  postGenre(genre) {
+    return getAuthHeaders()
+      .then(options => http.post('/genres', genre, options))
       .then(resp => resp.data)
   },
   postSong(obj, onProgress) {
