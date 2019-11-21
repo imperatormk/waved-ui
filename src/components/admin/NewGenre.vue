@@ -21,8 +21,10 @@ export default {
       this.adding = true
       Api.postGenre(this.genre)
         .then((res) => {
-          this.adding = false
           this.$emit('saved', res)
+        })
+        .finally(() => {
+          this.adding = false
         })
     }
   }

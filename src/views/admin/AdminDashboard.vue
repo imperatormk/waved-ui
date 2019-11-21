@@ -33,7 +33,7 @@
       .flex-row.space-between.align-center(slot="header")
         span Genres
         b-button(@click="newGenreVisible=!newGenreVisible" variant="primary") Add new genre
-      .p20-bot(v-if="newGenreVisible")
+      .p20-bot(v-if="newGenreVisible && loaded")
         NewGenre(@saved="fetchData")
       .flex-col
         b-table(
@@ -85,6 +85,8 @@ export default {
   methods: {
     fetchData() {
       this.loaded = false
+      this.newGenreVisible = false
+
       Api.getSongs(this.pagination)
         .then((resp) => {
           this.songs = resp.content
