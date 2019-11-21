@@ -11,7 +11,7 @@
         b-form-select(v-model="song.genres" :options="genres" value-field="id" text-field="name" multiple required)
         br
         br
-        b-form-input(v-model.number="song.price" type="number" min="0.01" placeholder="Price ($)")
+        b-form-input(v-model.number="song.price" type="number" min="0.01" step="0.01" placeholder="Price ($)")
         br
         TrackUpload(@filesChanged="filesChanged" :eventBus="getEventBus()")
         br
