@@ -38,6 +38,9 @@ import WaveSurfer from 'wavesurfer.js'
 import RegionPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min'
 import { instruments, colors } from '@/data'
 
+const fallbackServerUrl = 'https://studiodoblo.de:7000'
+const serverUrl = process.env.SERVER_URL || fallbackServerUrl
+
 const changePbColor = (id, color) => {
   const el = document.querySelector(`#${id} > .progress-bar`)
   el.style.backgroundColor = color
@@ -85,7 +88,7 @@ export default {
         minPxPerSec: 1
       })
       this.execSuppressed(() => {})
-      this.wavesurfer.load(`https://studiodoblo.de:7000/static/tracks/${this.track.url}`)
+      this.wavesurfer.load(`${serverUrl}/static/tracks/${this.track.url}`)
       if (this.regions.length) {
         this.wavesurfer.toggleInteraction()
       }

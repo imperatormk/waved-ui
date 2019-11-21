@@ -1,4 +1,5 @@
-const serverUrl = 'https://studiodoblo.de:7000'
+const fallbackServerUrl = 'https://studiodoblo.de:7000'
+const serverUrl = process.env.SERVER_URL || fallbackServerUrl
 
 module.exports = {
   devServer: {

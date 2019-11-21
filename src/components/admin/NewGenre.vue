@@ -20,7 +20,7 @@ export default {
       e.preventDefault()
       this.adding = true
       Api.postGenre(this.genre)
-        .then(res => {
+        .then((res) => {
           this.adding = false
           this.$emit('saved', res)
         })
