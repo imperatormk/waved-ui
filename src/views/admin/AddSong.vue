@@ -1,19 +1,21 @@
 <template lang="pug">
   Layout(title="Add song")
     b-alert(:show="!!submitErr" variant="danger") {{ submitErr }}
-    b-card.p15
-      b-form-input(v-model="song.title" placeholder="Title")
-      br
-      b-form-input(v-model="song.artist" placeholder="Artist")
-      br
-      b-form-select(v-model="song.genre" :options="genres" required)
-      br
-      br
-      b-form-input(v-model.number="song.price" type="number" min="0" placeholder="Price ($)")
-      br
-      TrackUpload(@filesChanged="filesChanged" :eventBus="getEventBus()")
-      br
-      b-button(@click="songSubmitted" :disabled="submitting" variant="primary") Submit
+    b-form(@submit="songSubmitted")
+      b-card.p15
+        b-form-input(v-model="song.title" placeholder="Title")
+        br
+        b-form-input(v-model="song.artist" placeholder="Artist")
+        br
+        p.p5-left Genres
+        b-form-select(v-model="song.genres" :options="genres" value-field="id" text-field="name" multiple required)
+        br
+        br
+        b-form-input(v-model.number="song.price" type="number" min="0.01" placeholder="Price ($)")
+        br
+        TrackUpload(@filesChanged="filesChanged" :eventBus="getEventBus()")
+        br
+        b-button(type="submit" :disabled="submitting" variant="primary") Submit
 </template>
 
 <script>
@@ -21,34 +23,39 @@ import TrackUpload from '@/components/TrackUpload'
 import Api from '@/services/api'
 
 export default {
+  created() {
+    this.getGenres()
+  },
   data: () => ({
-    song: {},
+    song: {
+      genres: []
+    },
+    genres: [],
     tracks: [],
-    genres: [
-      { value: 'rock', text: 'Rock' },
-      { value: 'pop', text: 'Pop' }
-    ],
     submitErr: '',
     submitting: false
   }),
   methods: {
+    getGenres() {
+      return Api.getGenres()
+        .then((genres) => {
+          this.genres = genres
+        })
+    },
     filesChanged(tracks) {
       this.tracks = tracks
     },
     getEventBus() {
       return this
     },
-    songSubmitted() {
-      const songTitle = this.song.title && this.song.title.trim()
-      const songArtist = this.song.artist && this.song.artist.trim()
-      const songGenre = this.song.genre
-      const songPrice = this.song.price > 0
+    songSubmitted(e) {
+      e.preventDefault()
 
       const hasTracks = !!this.tracks.length
       const allTracksHaveInstrument = !this.tracks.find(track => !track.metadata.instrument)
       const tracksValid = hasTracks && allTracksHaveInstrument
 
-      if (!songTitle || !songArtist || !songPrice || !songGenre || !tracksValid) return
+      if (!tracksValid) return
 
       this.submitErr = ''
       const { song, tracks } = this

@@ -36,7 +36,7 @@ export default new Router({
       props: true
     },
     {
-      path: '/genres/:genre',
+      path: '/genres/:genresCriteria',
       name: 'genres',
       component: Songs,
       props: true

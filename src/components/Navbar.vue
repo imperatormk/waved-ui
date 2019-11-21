@@ -7,13 +7,13 @@
       b-navbar-nav
         b-nav-item-dropdown
           template(slot="button-content") Genres
-          b-dropdown-item(v-for="(genre, idx) in Object.keys(genres)"
-            :key="genre"
-            :value="genre"
-            @click="gotoGenre(genre)") {{ genres[genre] }}
+          b-dropdown-item(v-for="genre in genres"
+            :key="genre.id"
+            :value="genre.name"
+            @click="gotoGenre(genre.tag)") {{ genre.name }}
         b-nav-item-dropdown
           template(slot="button-content") Instruments
-          b-dropdown-item(v-for="(instrument, idx) in Object.keys(instruments)"
+          b-dropdown-item(v-for="instrument in Object.keys(instruments)"
             :key="instrument"
             :value="instrument"
             @click="gotoInstrument(instrument)") {{ instruments[instrument].title }}
@@ -29,13 +29,17 @@
 </template>
 
 <script>
-import { instruments, genres } from '@/data'
+import Api from '@/services/api'
+import { instruments } from '@/data'
 
 export default {
   data: () => ({
     instruments,
-    genres
+    genres: []
   }),
+  created() {
+    this.getGenres()
+  },
   computed: {
     loggedIn() {
       return this.$store.state.authentication.status.loggedIn
@@ -45,8 +49,14 @@ export default {
     }
   },
   methods: {
+    getGenres() {
+      return Api.getGenres()
+        .then((genres) => {
+          this.genres = genres
+        })
+    },
     gotoGenre(genre) {
-      this.$router.push({ name: 'genres', params: { genre } })
+      this.$router.push({ name: 'genres', params: { genresCriteria: genre } })
     },
     gotoInstrument(instrument) {
       this.$router.push({ name: 'instruments', params: { instrument } })

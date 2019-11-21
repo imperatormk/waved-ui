@@ -40,8 +40,6 @@
           id="genre-table"
           :items="genres"
           :busy="!loaded"
-          :per-page="pagination.size"
-          :current-page="1"
           :fields="genreFields"
           show-empty
           hover
@@ -51,14 +49,6 @@
             span Nothing to see here...
           template(slot="table-busy")
             span Loading...
-        b-pagination(
-          v-if="totalElements > pagination.size"
-          v-model="pagination.page"
-          :total-rows="totalElements"
-          :per-page="pagination.size"
-          aria-controls="genre-table"
-          @change="fetchData"
-        )
 </template>
 
 <script>
@@ -76,7 +66,7 @@ export default {
     },
     totalElements: 0,
     songFields: ['title', 'artist', 'status'],
-    genreFields: ['name'],
+    genreFields: ['name', 'tag'],
     songs: [],
     genres: [],
     newGenreVisible: false,
@@ -87,10 +77,19 @@ export default {
       this.loaded = false
       this.newGenreVisible = false
 
-      Api.getSongs(this.pagination)
+      const songsPromise = Api.getSongs(this.pagination)
         .then((resp) => {
           this.songs = resp.content
           this.totalElements = resp.totalElements
+        })
+
+      const genresPromise = Api.getGenres()
+        .then((genres) => {
+          this.genres = genres
+        })
+
+      Promise.all([songsPromise, genresPromise])
+        .finally(() => {
           this.loaded = true
         })
     },

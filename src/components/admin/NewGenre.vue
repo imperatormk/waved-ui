@@ -18,6 +18,7 @@ export default {
   methods: {
     onSubmit(e) {
       e.preventDefault()
+
       this.adding = true
       Api.postGenre(this.genre)
         .then((res) => {

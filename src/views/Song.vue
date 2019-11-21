@@ -1,5 +1,5 @@
 <template lang="pug">
-  Layout(:title="song ? `${song.title} (${song.genre})` : ''" :subtitle="song ? `by ${song.artist}` : ''")
+  Layout(:title="song ? `${song.title} (${genres})` : ''" :subtitle="song ? `by ${song.artist}` : ''")
     .flex-col(v-if="loaded")
       .flex-col(v-if="song.status === 'READY'")
         .p10-bot.m5.flex-row.justify-end
@@ -34,7 +34,7 @@
       .flex-col(v-else-if="song.status === 'PREPARING'")
         b-alert(show variant="warning") Song not ready yet, please try again in a bit.
       .flex-col(v-else-if="song.status === 'FAILED'")
-        b-alert(show variant="error") Song is corrupted, please contact admin.
+        b-alert(show variant="danger") Song is corrupted, please contact admin.
 </template>
 
 <script>
@@ -91,6 +91,17 @@ export default {
     },
     loggedUser() {
       return this.$store.state.authentication.user
+    },
+    genres() {
+      const { genres } = this.song
+      if (!genres) return ''
+
+      const genresMapped = genres
+        .map(item => item.name)
+        .map(item => item.toLowerCase())
+        .join(', ')
+        .trim()
+      return genresMapped
     }
   },
   methods: {

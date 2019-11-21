@@ -5,44 +5,63 @@
         b-list-group
           b-list-group-item(v-for="song in songs" :key="songs.id")
             SongItem(:song="song")
-        .fs18.p15(v-if="!songs.length") Nothing to see here...
+        .fs18.p15(v-if="!songs.length")
+          span Nothing to see here...
 </template>
 
 <script>
 import SongItem from '@/components/SongItem'
 import Api from '@/services/api'
-import { instruments, genres } from '@/data'
+import { instruments } from '@/data'
 
 export default {
   props: {
     instrument: String,
-    genre: String
+    genresCriteria: String
   },
   created() {
-    this.getCriteria()
-    this.getSongs()
+    this.getGenres()
+      .then(() => {
+        this.getCriteria()
+        this.getSongs()
+      })
   },
   data: () => ({
     criteria: {},
-    songs: []
+    songs: [],
+    genres: []
   }),
   computed: {
     criteriaType() {
-      const { instrument, genre } = this.criteria
-      if (instrument) return instruments[instrument].title
-      if (genre) return genres[genre]
+      const { instrument, genres } = this.criteria
+      if (instrument) return `Instrument: ${instruments[instrument].title.toLowerCase()}`
+      if (genres) {
+        const genresMapped = genres
+          .split(',')
+          .map(item => item.toLowerCase())
+          .join(', ')
+          .trim()
+        return `Genres: ${genresMapped}`
+      }
       return 'Latest songs'
     }
   },
   methods: {
+    getGenres() {
+      return Api.getGenres()
+        .then((genres) => {
+          this.genres = genres
+          return genres
+        })
+    },
     getCriteria() {
-      const { instrument, genre } = this
+      const { instrument, genresCriteria } = this
       const criteria = {}
 
       if (instruments[instrument]) {
         criteria.instrument = instrument
-      } else if (genres[genre]) {
-        criteria.genre = genre
+      } else if (genresCriteria) {
+        criteria.genres = genresCriteria
       }
       this.criteria = criteria
     },
