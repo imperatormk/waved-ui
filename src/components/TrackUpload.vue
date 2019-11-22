@@ -15,7 +15,7 @@
                 .flex-row.p5.align-center.space-between
                   span Instrument
                   .p5
-                  select(v-model="fileObj.metadata.instrument" required)
+                  select(v-model="fileObj.metadata.instrument.type" required)
                     option(v-for="(instrument, idx) in Object.keys(instruments)" :key="instrument" :value="instrument") {{ instruments[instrument].title }}
                 .flex-row.justify-end.p5
                   b-button(variant="danger"
@@ -81,7 +81,9 @@ export default {
       const instrument = Object.keys(instruments)[nextInstrument]
       const metadata = {
         id: `track-${file.lastModified}`,
-        instrument
+        instrument: {
+          type: instrument
+        }
       }
 
       this.files.push({

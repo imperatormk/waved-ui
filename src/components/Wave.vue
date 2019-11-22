@@ -130,11 +130,11 @@ export default {
     },
     instrumentIcon() {
       const { instrument } = this.track
-      return instruments[instrument].icon
+      return instruments[instrument.type].icon
     },
     instrumentTitle() {
       const { instrument } = this.track
-      return instruments[instrument].title
+      return instruments[instrument.type].title
     }
   },
   methods: {
