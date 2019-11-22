@@ -3,7 +3,7 @@
     .flex-column.align-center
       label
         form(ref="fileform")
-          input.hidden(type="file" ref="fileInput" @change="fileBrowsed")
+          input.hidden(type="file" ref="fileInput" @change="fileBrowsed" multiple="multiple")
           .flex-column.h100.justify-center
             .p10.fs25 Drag and drop
             .far.fa-copy.fs60
@@ -69,11 +69,12 @@ export default {
       }
     },
     fileBrowsed(e) {
-      const file = e.target.files[0]
-      if (file) {
-        this.pushFile(file)
-        this.$emit('filesChanged', this.files)
+      const { files } = e.target
+      for (let i = 0; i < files.length; i += 1) {
+        this.pushFile(files[i])
       }
+
+      this.$emit('filesChanged', this.files)
     },
     pushFile(file) {
       const nextInstrument = Math.min(Object.keys(instruments).length - 1, this.files.length)
