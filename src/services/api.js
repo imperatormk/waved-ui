@@ -74,7 +74,7 @@ export default {
       .then(resp => resp.data)
   },
   postSong(obj, onProgress) {
-    const { song, tracks } = obj
+    const { thumbnail, song, tracks } = obj
 
     return getAuthHeaders()
       .then(options => http.post('/songs', song, options))
@@ -96,7 +96,17 @@ export default {
           }, onProgress)
         })
 
-        return Promise.all(trackPromises)
+        const thumbnailPromise = (() => {
+          const formData = new FormData()
+          formData.append('thumbnail', thumbnail)
+
+          return promisedXhr(`/api/songs/${songId}/thumbnail`, {
+            method: 'POST',
+            body: formData
+          })
+        })()
+
+        return Promise.all([...trackPromises, thumbnailPromise])
           .then(trackResults => ({
             song: songResult,
             tracks: trackResults
