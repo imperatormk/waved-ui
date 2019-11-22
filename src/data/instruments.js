@@ -7,4 +7,8 @@ export default {
     title: 'Drums',
     icon: 'drum'
   },
+  custom: {
+    title: 'Custom',
+    icon: 'broom'
+  },
 }

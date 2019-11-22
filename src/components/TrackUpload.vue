@@ -17,6 +17,11 @@
                   .p5
                   select(v-model="fileObj.metadata.instrument.type" required)
                     option(v-for="(instrument, idx) in Object.keys(instruments)" :key="instrument" :value="instrument") {{ instruments[instrument].title }}
+                .flex-row.p5.align-center.space-between
+                  .flex-row
+                    .flex-row.align-center
+                      span.p10-right Type
+                      b-form-input(v-model="fileObj.metadata.instrument.name" style="padding-top:inherit;padding-bottom:inherit;height:auto")
                 .flex-row.justify-end.p5
                   b-button(variant="danger"
                     @click.stop.prevent="removeFile(fileObj.metadata.id)"
@@ -37,11 +42,6 @@ export default {
       required: true
     }
   },
-  data: () => ({
-    dragAndDropCapable: false,
-    files: [],
-    instruments
-  }),
   mounted() {
     if (this.filesProp) this.files = this.filesProp
     this.eventBus.$on('progress', this.onProgress)
@@ -49,6 +49,11 @@ export default {
   destroyed() {
     this.eventBus.$off('progress')
   },
+  data: () => ({
+    dragAndDropCapable: false,
+    files: [],
+    instruments
+  }),
   methods: {
     prepareDragNDrop() {
       this.dragAndDropCapable = this.determineDragAndDropCapable()

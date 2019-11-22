@@ -5,7 +5,7 @@
     .flex-row.align-center.font-black
       .w8.flex-col.align-center
         font-awesome-icon.fs30(:icon="instrumentIcon")
-        span {{ instrumentTitle }}
+        span.p5-top.text-center.narrow-line {{ instrumentTitle }}
       .w72.flex-col(:style="{'background-color':color}")
         .w100(ref="wave" @ready="onReady" :id="'wave' + track.id")
       .p10
@@ -126,15 +126,23 @@ export default {
   }),
   computed: {
     color() {
-      return colors[this.index]
+      const index = this.index % colors.length
+      return colors[index]
     },
     instrumentIcon() {
       const { instrument } = this.track
-      return instruments[instrument.type].icon
+      const { type } = instrument
+      const { icon } = instruments[type]
+      return icon
     },
     instrumentTitle() {
       const { instrument } = this.track
-      return instruments[instrument.type].title
+      const { type, name } = instrument
+      const { title } = instruments[type]
+
+      if (type === 'custom') return name
+      if (name) return `${title} (${name})`
+      return title
     }
   },
   methods: {

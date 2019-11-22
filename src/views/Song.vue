@@ -16,11 +16,11 @@
                 b-form-input(type="range" @change="tempoChanged" min="1" max="500" :value="tempo * 100")
               .p20-side
               div(v-if="allReady")
-              .flex-row.align-center
-                div
-                  b-button(@click.prevent="togglePlay") {{ !playing ? 'Play' : 'Pause' }}
-                .p5-left
-                  b-button(@click.prevent="collectData" :disabled="preparing") Prepare
+                .flex-row.align-center
+                  div
+                    b-button(@click.prevent="togglePlay") {{ !playing ? 'Play' : 'Pause' }}
+                  .p5-left
+                    b-button(@click.prevent="collectData" :disabled="preparing") Prepare
         Wave.m5(@ready="onWaveReady"
           @export="exportAcc"
           @newseek="$emit('newseek', $event)"
@@ -54,7 +54,7 @@ export default {
     this.fetchData()
     document.body.onkeyup = (e) => {
       if (e.keyCode === 32) {
-        this.togglePlay()
+        this.togglePlay({ type: 'spacebar' })
       }
     }
   },
@@ -142,7 +142,12 @@ export default {
           this.tracks = song.tracks
         })
     },
-    togglePlay() {
+    togglePlay(e) {
+      const isSpacebar = e.type === 'spacebar'
+      const isMouse = !!(e.screenX && e.screenX !== 0 && e.screenY && e.screenY !== 0)
+      const wouldCollide = !isSpacebar && !isMouse
+      if (wouldCollide) return
+
       this.$emit('toggleplay')
       this.playing = !this.playing
     },
