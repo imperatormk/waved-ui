@@ -1,8 +1,8 @@
 <template lang="pug">
   div(@click="gotoSong" style="cursor:pointer;")
     .flex-row
-      div
-        b-img(v-if="thumbnailUrl" :src="thumbnailUrl")
+      .flex-row.align-center.p10-right(v-if="thumbnailUrl")
+        b-img.song-thumbnail(:src="thumbnailUrl")
       .flex-row.space-between.w100
         .flex-col
           h4 {{ song.title }}
@@ -35,3 +35,9 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+  .song-thumbnail {
+    max-width: 150px;
+  }
+</style>
