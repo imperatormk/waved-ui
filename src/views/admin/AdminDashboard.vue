@@ -116,7 +116,6 @@ export default {
       if (this.songToDelete !== songId) {
         this.songToDelete = songId
       } else {
-        console.log('delete song', songId)
         Api.deleteSong(songId)
           .then(() => this.fetchData())
       }

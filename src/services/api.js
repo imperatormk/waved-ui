@@ -117,15 +117,45 @@ export default {
         return Promise.reject(data)
       })
   },
-  updateSong(song) {
+  updateSong(obj) {
+    const { thumbnail, song } = obj
+    delete song.thumbnail
+
     return getAuthHeaders()
       .then(options => http.put('/songs', song, options))
       .then(resp => resp.data)
+      .then((songResult) => {
+        if (!thumbnail) return { song: songResult }
+
+        const songId = songResult.id
+        const thumbnailPromise = (() => {
+          const formData = new FormData()
+          formData.append('thumbnail', thumbnail)
+
+          return promisedXhr(`/api/songs/${songId}/thumbnail`, {
+            method: 'POST',
+            body: formData
+          })
+        })()
+
+        return Promise.all([thumbnailPromise])
+          .then(() => ({
+            song: songResult
+          }))
+      })
+      .catch((err) => {
+        const { data } = err.response
+        return Promise.reject(data)
+      })
   },
   deleteSong(songId) {
     return getAuthHeaders()
       .then(options => http.delete(`/songs/${songId}`, options))
       .then(resp => resp.data)
+      .catch((err) => {
+        const { data } = err.response
+        return Promise.reject(data)
+      })
   },
   registerUser(userObj) {
     return http.post('/accounts/register', userObj)

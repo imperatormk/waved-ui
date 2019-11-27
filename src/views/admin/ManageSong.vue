@@ -11,23 +11,23 @@
         b-form-select(v-model="song.genres" :options="genres" value-field="id" text-field="name" multiple required)
         br
         br
-        div(v-if="!songId")
-          p.p5-left Thumbnail
-          image-uploader(
-            @input="setThumbnail"
-            preview
-            accept="image/*"
-            outputFormat="file"
-            :className="['fileinput', { 'fileinput--loaded' : !!thumbnail }]"
-          )
-            label(for="fileInput" slot="upload-label" style="display:block;")
-              .flex-col.align-center.upload-label.p15-left
+        p.p5-left Thumbnail
+        image-uploader(
+          @input="setThumbnail"
+          preview
+          accept="image/*"
+          outputFormat="file"
+          :className="['fileinput', { 'fileinput--loaded' : !!thumbnail }]"
+        )
+          label.upload-label(for="fileInput" slot="upload-label" style="display:block;")
+            .flex-col.align-center.p15-left
+              template(v-if="!songId && !thumbnail")
                 figure
                   svg(xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32")
                     path.path1(d="M9.5 19c0 3.59 2.91 6.5 6.5 6.5s6.5-2.91 6.5-6.5-2.91-6.5-6.5-6.5-6.5 2.91-6.5 6.5zM30 8h-7c-0.5-2-1-4-3-4h-8c-2 0-2.5 2-3 4h-7c-1.1 0-2 0.9-2 2v18c0 1.1 0.9 2 2 2h28c1.1 0 2-0.9 2-2v-18c0-1.1-0.9-2-2-2zM16 27.875c-4.902 0-8.875-3.973-8.875-8.875s3.973-8.875 8.875-8.875c4.902 0 8.875 3.973 8.875 8.875s-3.973 8.875-8.875 8.875zM30 14h-4v-2h4v2z")
-                span.upload-caption {{ thumbnail ? 'Replace' : 'Upload' }}
-          br
-          br
+                span.upload-caption Upload
+              b-img.song-thumbnail(v-if="!thumbnail" :src="thumbnailUrl")
+        br
         b-form-input(v-model.number="song.price" type="number" min="0.01" step="0.01" placeholder="Price ($)" required)
         br
         div(v-if="!songId")
@@ -41,6 +41,16 @@
 <script>
 import TrackUpload from '@/components/TrackUpload'
 import Api from '@/services/api'
+
+const fallbackServerUrl = 'https://studiodoblo.de:7000'
+const serverUrl = process.env.VUE_APP_SERVER_URL || fallbackServerUrl
+
+const moveInputLabel = () => {
+  const source = document.getElementsByClassName('img-preview')[0]
+  const destination = document.getElementsByClassName('upload-label')[0]
+
+  destination.appendChild(source)
+}
 
 export default {
   props: {
@@ -63,6 +73,12 @@ export default {
     submitErr: '',
     submitting: false
   }),
+  computed: {
+    thumbnailUrl() {
+      if (!this.song.thumbnail) return null
+      return `${serverUrl}/static/thumbnails/${this.song.thumbnail}`
+    }
+  },
   methods: {
     getGenres() {
       return Api.getGenres()
@@ -77,10 +93,10 @@ export default {
       Api.getSong(songId, 0)
         .then((song) => {
           const {
-            id, title, artist, price
+            id, title, artist, thumbnail, price
           } = song
           const songObj = {
-            id, title, artist, price
+            id, title, artist, thumbnail, price
           }
           songObj.genres = song.genres.map(item => item.id)
           this.song = songObj
@@ -91,6 +107,7 @@ export default {
     },
     setThumbnail(thumbnail) {
       this.thumbnail = thumbnail
+      moveInputLabel()
     },
     songSubmitted(e) {
       e.preventDefault()
@@ -133,7 +150,10 @@ export default {
         })
     },
     updateSong() {
-      Api.updateSong(this.song)
+      const { song, thumbnail } = this
+      const reqObj = { song, thumbnail }
+
+      Api.updateSong(reqObj)
         .then(() => {
           this.$router.push({ name: 'adminDashboard' })
         })
@@ -164,5 +184,8 @@ export default {
   }
   .img-preview {
     max-width: 200px;
+  }
+  .song-thumbnail {
+    max-width: 150px;
   }
 </style>
