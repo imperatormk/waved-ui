@@ -4,7 +4,7 @@
       b-progress(:id="'pb' + track.id" :value="1" :max="1" animated)
     .flex-row.align-center.font-black
       .w8.flex-col.align-center
-        font-awesome-icon.fs30(:icon="instrumentIcon")
+        font-awesome-icon.fs30(:icon="instrumentIcon" fixed-width)
         span.p5-top.text-center.narrow-line {{ instrumentTitle }}
       .w72.flex-col(:style="{'background-color':color}")
         .w100(ref="wave" @ready="onReady" :id="'wave' + track.id")

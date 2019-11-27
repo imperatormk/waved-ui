@@ -117,6 +117,16 @@ export default {
         return Promise.reject(data)
       })
   },
+  updateSong(song) {
+    return getAuthHeaders()
+      .then(options => http.put('/songs', song, options))
+      .then(resp => resp.data)
+  },
+  deleteSong(songId) {
+    return getAuthHeaders()
+      .then(options => http.delete(`/songs/${songId}`, options))
+      .then(resp => resp.data)
+  },
   registerUser(userObj) {
     return http.post('/accounts/register', userObj)
       .then(resp => resp.data)

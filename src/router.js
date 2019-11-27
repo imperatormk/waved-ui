@@ -8,7 +8,7 @@ import Song from '@/views/Song'
 import Songs from '@/views/Songs'
 import AdminDashboard from '@/views/admin/AdminDashboard'
 import UserDashboard from '@/views/user/UserDashboard'
-import AddSong from '@/views/admin/AddSong'
+import ManageSong from '@/views/admin/ManageSong'
 
 Vue.use(Router)
 
@@ -72,7 +72,15 @@ export default new Router({
     {
       path: '/admin/songs/add',
       name: 'addSong',
-      component: AddSong
+      component: ManageSong
+    },
+    {
+      path: '/admin/songs/edit/:songId',
+      name: 'editSong',
+      component: ManageSong,
+      props: route => ({
+        ...routeParamToNumber(route.params, 'songId')
+      })
     }
   ]
 })

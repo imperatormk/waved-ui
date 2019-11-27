@@ -10,12 +10,19 @@
           :items="songs"
           :busy="!loaded"
           :per-page="pagination.size"
-          :current-page="1"
+          :current-page="pagination.page"
           :fields="songFields"
           show-empty
           hover
           small
         )
+          template(v-slot:cell(actions)="data")
+            .flex-row
+              b-button(@click="gotoEditSong(data.item.id)" size="sm" variant="warning")
+                font-awesome-icon(icon="pen" fixed-width)
+              .p5
+              b-button(@click="deleteSong(data.item.id)" size="sm" variant="danger")
+                font-awesome-icon(:icon="songToDelete !== data.item.id ? 'trash-alt' : 'check'" fixed-width)
           template(slot="empty")
             span Nothing to see here...
           template(slot="table-busy")
@@ -65,11 +72,17 @@ export default {
       size: 10
     },
     totalElements: 0,
-    songFields: ['title', 'artist', 'status'],
+    songFields: [
+      { key: 'title', label: 'Title' },
+      { key: 'artist', label: 'Artist' },
+      { key: 'status', label: 'Status' },
+      { key: 'actions', label: 'Actions' }
+    ],
     genreFields: ['name', 'tag'],
     songs: [],
     genres: [],
     newGenreVisible: false,
+    songToDelete: null,
     loaded: false
   }),
   methods: {
@@ -95,6 +108,18 @@ export default {
     },
     gotoAddSong() {
       this.$router.push({ name: 'addSong' })
+    },
+    gotoEditSong(songId) {
+      this.$router.push({ name: 'editSong', params: { songId } })
+    },
+    deleteSong(songId) {
+      if (this.songToDelete !== songId) {
+        this.songToDelete = songId
+      } else {
+        console.log('delete song', songId)
+        Api.deleteSong(songId)
+          .then(() => this.fetchData())
+      }
     }
   },
   components: {
