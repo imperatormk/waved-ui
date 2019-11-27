@@ -49,29 +49,71 @@ export default {
   getGenres() {
     return http.get('/genres')
       .then(resp => resp.data)
+      .catch((err) => {
+        const { data } = err.response
+        return Promise.reject(data)
+      })
   },
   getSongs(pageData = {}, criteria = {}) {
     return http.get('/songs', { params: { ...pageData, ...criteria } })
       .then(resp => resp.data)
+      .catch((err) => {
+        const { data } = err.response
+        return Promise.reject(data)
+      })
   },
   getSong(songId, pitch) {
     return http.get(`/songs/${songId}`, { params: { pitch } })
       .then(resp => resp.data)
+      .catch((err) => {
+        const { data } = err.response
+        return Promise.reject(data)
+      })
   },
   getProcessings(params) {
     return getAuthHeaders({ params })
       .then(options => http.get('/processings', options))
       .then(resp => resp.data)
+      .catch((err) => {
+        const { data } = err.response
+        return Promise.reject(data)
+      })
   },
   processTracks(songId, data) {
     return getAuthHeaders()
       .then(options => http.post(`/songs/${songId}/prepare`, data, options))
       .then(resp => resp.data)
+      .catch((err) => {
+        const { data } = err.response
+        return Promise.reject(data)
+      })
   },
   postGenre(genre) {
     return getAuthHeaders()
       .then(options => http.post('/genres', genre, options))
       .then(resp => resp.data)
+      .catch((err) => {
+        const { data } = err.response
+        return Promise.reject(data)
+      })
+  },
+  updateGenre(genre) {
+    return getAuthHeaders()
+      .then(options => http.put('/genres', genre, options))
+      .then(resp => resp.data)
+      .catch((err) => {
+        const { data } = err.response
+        return Promise.reject(data)
+      })
+  },
+  deleteGenre(genreId) {
+    return getAuthHeaders()
+      .then(options => http.delete(`/genres/${genreId}`, options))
+      .then(resp => resp.data)
+      .catch((err) => {
+        const { data } = err.response
+        return Promise.reject(data)
+      })
   },
   postSong(obj, onProgress) {
     const { thumbnail, song, tracks } = obj
@@ -182,5 +224,9 @@ export default {
     return getAuthHeaders()
       .then(options => http.get(`/processings/${pcsId}/order`, options))
       .then(resp => resp.data)
+      .catch((err) => {
+        const { data } = err.response
+        return Promise.reject(data)
+      })
   }
 }

@@ -21,7 +21,7 @@
                   .flex-row
                     .flex-row.align-center
                       span.p10-right Type
-                      b-form-input(v-model="fileObj.metadata.instrument.name" style="padding-top:inherit;padding-bottom:inherit;height:auto")
+                      b-form-input.min-text(v-model="fileObj.metadata.instrument.name")
                 .flex-row.justify-end.p5
                   b-button(variant="danger"
                     @click.stop.prevent="removeFile(fileObj.metadata.id)"
@@ -145,6 +145,11 @@ export default {
   div.wrapper a {
     color: red;
     cursor: pointer;
+  }
+  .min-text {
+    padding-top:inherit;
+    padding-bottom:inherit;
+    height:auto;
   }
 }
 </style>

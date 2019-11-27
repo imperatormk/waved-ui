@@ -2,30 +2,37 @@
   b-form(@submit="onSubmit")
     b-form-input(v-model="genre.name" :state="!!genre.name" placeholder="Name" required)
     .m10
-    b-button(type="submit" :disabled="adding" variant="primary") Submit
+    b-button(type="submit" :disabled="posting" variant="primary") Submit
 </template>
 
 <script>
 import Api from '@/services/api'
 
 export default {
+  props: {
+    initGenre: Object
+  },
+  created() {
+    if (this.initGenre) this.genre = this.initGenre
+  },
   data: () => ({
     genre: {
       name: ''
     },
-    adding: false
+    posting: false
   }),
   methods: {
     onSubmit(e) {
       e.preventDefault()
+      this.posting = true
 
-      this.adding = true
-      Api.postGenre(this.genre)
+      const apiAction = !this.genre.id ? Api.postGenre : Api.updateGenre
+      apiAction(this.genre)
         .then((res) => {
           this.$emit('saved', res)
         })
         .finally(() => {
-          this.adding = false
+          this.posting = false
         })
     }
   }
