@@ -1,11 +1,11 @@
 <template lang="pug">
-  div(@click="gotoSong" style="cursor:pointer;")
+  .song-item(@click="gotoSong" style="cursor:pointer;")
     .flex-row
       .flex-row.align-center.p10-right(v-if="thumbnailUrl")
         b-img.song-thumbnail(:src="thumbnailUrl")
       .flex-row.space-between.w100
         .flex-col
-          h4 {{ song.title }}
+          h5 {{ song.title }}
           span {{ song.artist }}
         .flex-row.align-end
           span ${{ song.price }}
@@ -37,7 +37,9 @@ export default {
 </script>
 
 <style lang="scss">
-  .song-thumbnail {
-    max-width: 150px;
+  .song-item {
+    .song-thumbnail {
+      max-width: 100px;
+    }
   }
 </style>

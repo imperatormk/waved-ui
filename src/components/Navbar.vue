@@ -16,6 +16,7 @@
           b-dropdown-item(v-for="instrument in Object.keys(instruments)"
             :key="instrument"
             :value="instrument"
+            v-if="instrument !== 'custom'"
             @click="gotoInstrument(instrument)") {{ instruments[instrument].title }}
       b-navbar-nav.ml-auto
         b-nav-item-dropdown(v-if="loggedIn" right)

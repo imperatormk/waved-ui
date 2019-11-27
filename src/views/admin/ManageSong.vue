@@ -1,5 +1,5 @@
 <template lang="pug">
-  Layout(title="Add song")
+  Layout.manage-song(:title="pageTitle")
     b-alert(:show="!!submitErr" variant="danger") {{ submitErr }}
     b-form(@submit="songSubmitted")
       b-card.p15
@@ -74,6 +74,9 @@ export default {
     submitting: false
   }),
   computed: {
+    pageTitle() {
+      return !this.songId ? 'Add song' : 'Edit song'
+    },
     thumbnailUrl() {
       if (!this.song.thumbnail) return null
       return `${serverUrl}/static/thumbnails/${this.song.thumbnail}`
@@ -174,18 +177,20 @@ export default {
 }
 </script>
 
-<style>
-  #fileInput {
-    display: none;
-  }
-  .upload-label {
-    width: min-content;
-    cursor: pointer;
-  }
-  .img-preview {
-    max-width: 200px;
-  }
-  .song-thumbnail {
-    max-width: 150px;
+<style lang="scss">
+  .manage-song {
+    #fileInput {
+      display: none;
+    }
+    .upload-label {
+      width: min-content;
+      cursor: pointer;
+    }
+    .img-preview {
+      max-width: 200px;
+    }
+    .song-thumbnail {
+      max-width: 150px;
+    }
   }
 </style>

@@ -1,33 +1,19 @@
 <template lang="pug">
-  b-card(no-body)
-    .p10(v-if="loading")
+  b-card(no-body style="padding:2px;")
+    .p5(v-if="loading")
       b-progress(:id="'pb' + track.id" :value="1" :max="1" animated)
     .flex-row.align-center.font-black
-      .w8.flex-col.align-center
+      .w10.flex-col.align-center
         font-awesome-icon.fs30(:icon="instrumentIcon" fixed-width)
-        span.p5-top.text-center.narrow-line {{ instrumentTitle }}
-      .w72.flex-col(:style="{'background-color':color}")
+        span.p5-top.p5-right.text-center.narrow-line {{ instrumentTitle }}
+      .w70.flex-col(:style="{'background-color':color}")
         .w100(ref="wave" @ready="onReady" :id="'wave' + track.id")
-      .p10
-      .w20.flex-row.p5.align-center.space-between
-        .p5.flex-col.justify-center
-          .flex-col
-            .flex-row.space-between
-              span L
-              span C
-              span R
-            .flex-row
-              .flex-1
-                b-form-input(type="range" @change="panningChanged" min="-100" max="100" step="20" :value="panning * 100")
-          .flex-col
-            .flex-row.space-between
-              span 0
-              span 50
-              span 100
-            .flex-row
-              .flex-1
-                b-form-input(type="range" @change="volumeChanged" min="0" max="100" value="100")
-        .p5.flex-col.justify-end.align-center
+      .p10-side
+      .w20.flex-row.align-center.space-between
+        .flex-col.justify-center
+          b-form-input(type="range" @change="panningChanged" min="-100" max="100" step="20" :value="panning * 100")
+          b-form-input(type="range" @change="volumeChanged" min="0" max="100" value="100")
+        .p10-side.flex-row.align-end.justify-center
           b-button(@click="toggleMute" :variant="mute ? 'warning' : null") M
           .p5
           b-button(@click="newSolo" :variant="solo ? 'danger' : null") S
@@ -83,7 +69,7 @@ export default {
         plugins: [
           RegionPlugin.create(regionConfig)
         ],
-        height: 70,
+        height: 50,
         responsive: true,
         minPxPerSec: 1
       })
