@@ -21,7 +21,8 @@
                     b-button(@click.prevent="togglePlay") {{ !playing ? 'Play' : 'Pause' }}
                   .p5-left
                     b-button(@click.prevent="collectData" :disabled="preparing") Prepare
-        Wave.m5(@ready="onWaveReady"
+        Wave(
+          @ready="onWaveReady"
           @export="exportAcc"
           @newseek="$emit('newseek', $event)"
           @soloed="soloed"
@@ -30,7 +31,8 @@
           :regions="regions"
           :track="track"
           :index="idx"
-          :eventBus="getEventBus()")
+          :eventBus="getEventBus()"
+        )
       .flex-col(v-else-if="song.status === 'PREPARING'")
         b-alert(show variant="warning") Song not ready yet, please try again in a bit.
       .flex-col(v-else-if="song.status === 'FAILED'")

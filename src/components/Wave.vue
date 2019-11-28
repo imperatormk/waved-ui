@@ -3,19 +3,27 @@
     .p5(v-if="loading")
       b-progress(:id="'pb' + track.id" :value="1" :max="1" animated)
     .flex-row.align-center.font-black
-      .w10.flex-col.align-center
-        font-awesome-icon.fs30(:icon="instrumentIcon" fixed-width)
-        span.p5-top.p5-right.text-center.narrow-line {{ instrumentTitle }}
-      .w70.flex-col(:style="{'background-color':color}")
+      .w18.flex-row.align-center.space-between.p10-side
+        span.narrow-line {{ instrumentTitle }}
+        font-awesome-icon.fs20(:icon="instrumentIcon" fixed-width)
+      .w57.flex-col(:style="{'background-color':color}")
         .w100(ref="wave" @ready="onReady" :id="'wave' + track.id")
       .p10-side
-      .w20.flex-row.align-center.space-between
+      .w25.flex-row.align-center.space-between
         .flex-col.justify-center
-          b-form-input(type="range" @change="panningChanged" min="-100" max="100" step="20" :value="panning * 100")
-          b-form-input(type="range" @change="volumeChanged" min="0" max="100" value="100")
-        .p10-side.flex-row.align-end.justify-center
+          .flex-row.align-center
+            .w70.flex-row.align-center
+              b-form-input(type="range" @input="panningChanged" min="-100" max="100" step="20" :value="panning * 100")
+            .w30.flex-row.justify-end.align-center
+              span {{ panningDirection }} {{ Math.abs(panning).toFixed(1) }}
+          .flex-row.align-center
+            .w70.flex-row.align-center
+              b-form-input(type="range" @input="volumeChanged" min="0" max="100" value="100")
+            .w30.flex-row.justify-end.align-center
+              span {{ volume }}%
+        .p20-left.p5-right.flex-row.align-end.justify-center
           b-button(@click="toggleMute" :variant="mute ? 'warning' : null") M
-          .p5
+          .p5-left
           b-button(@click="newSolo" :variant="solo ? 'danger' : null") S
 </template>
 
@@ -69,7 +77,7 @@ export default {
         plugins: [
           RegionPlugin.create(regionConfig)
         ],
-        height: 50,
+        height: 40,
         responsive: true,
         minPxPerSec: 1
       })
@@ -107,6 +115,7 @@ export default {
     solo: false,
     hasSolo: false,
     playing: false,
+    volume: 100,
     panning: 0,
     loading: true
   }),
@@ -129,6 +138,11 @@ export default {
       if (type === 'custom') return name
       if (name) return `${title} (${name})`
       return title
+    },
+    panningDirection() {
+      if (this.panning === 0) return 'C'
+      if (this.panning < 0) return 'L'
+      if (this.panning > 0) return 'R'
     }
   },
   methods: {
@@ -157,6 +171,7 @@ export default {
     volumeChanged(e) {
       const newValue = e / 100
       this.wavesurfer.setVolume(newValue)
+      this.volume = e
     },
     panningChanged(e) {
       const value = Math.sin(e * (Math.PI / 180))
