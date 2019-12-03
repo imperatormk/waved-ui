@@ -29,6 +29,7 @@
           v-for="(track, idx) in tracks"
           :key="track.id"
           :regions="regions"
+          :songDuration="song.duration"
           :track="track"
           :index="idx"
           :eventBus="getEventBus()"
@@ -132,7 +133,8 @@ export default {
           end: start + REGION_DURATION,
           loop: true,
           dragSelection: false,
-          resizeSelection: false
+          resizeSelection: false,
+          color: 'rgba(0,0,0,0.25)'
         })
       }
     },

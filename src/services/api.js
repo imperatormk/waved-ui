@@ -79,9 +79,9 @@ export default {
         return Promise.reject(data)
       })
   },
-  processTracks(songId, data) {
+  processTracks(songId, trackData) {
     return getAuthHeaders()
-      .then(options => http.post(`/songs/${songId}/prepare`, data, options))
+      .then(options => http.post(`/songs/${songId}/prepare`, trackData, options))
       .then(resp => resp.data)
       .catch((err) => {
         const { data } = err.response

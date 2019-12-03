@@ -40,6 +40,32 @@ const changePbColor = (id, color) => {
   el.style.backgroundColor = color
 }
 
+const getSeconds = (val) => {
+  const [minutes, seconds] = val.split(':')
+  const numericM = Number(minutes)
+  const numericS = Number(seconds)
+  return numericM * 60 + numericS
+}
+
+const hydrateRegions = (id, duration) => {
+  const regions = document.querySelectorAll(`#${id} > wave > region`)
+  regions.forEach((el) => {
+    const title = el.getAttribute('title')
+    if (!title) return
+
+    const [start, end] = title.split('-')
+    const startS = getSeconds(start)
+    const endS = getSeconds(end)
+    const regionDuration = endS - startS
+
+    const width = Math.round(regionDuration / duration * 100)
+    el.style.width = `${width}%`
+
+    const offset = Math.round(startS / duration * 100)
+    el.style.left = `${offset}%`
+  })
+}
+
 export default {
   props: {
     index: Number,
@@ -51,6 +77,7 @@ export default {
       type: Array,
       default: () => []
     },
+    songDuration: Number,
     eventBus: {
       type: Object,
       required: true
@@ -140,9 +167,9 @@ export default {
       return title
     },
     panningDirection() {
-      if (this.panning === 0) return 'C'
       if (this.panning < 0) return 'L'
       if (this.panning > 0) return 'R'
+      return 'C'
     }
   },
   methods: {
@@ -221,6 +248,11 @@ export default {
         const startTime = firstRegion.start
         const progress = startTime / duration
         this.wavesurfer.seekTo(progress)
+
+        const waveId = `wave${this.track.id}`
+        this.$nextTick(() => {
+          hydrateRegions(waveId, this.songDuration)
+        })
       }
       this.loading = false
       this.$emit('ready')
