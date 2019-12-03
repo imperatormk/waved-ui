@@ -48,24 +48,32 @@ const getSeconds = (val) => {
 }
 
 const hydrateRegions = (id, duration) => {
-  const regions = document.querySelectorAll(`#${id} > wave > region`)
-  regions.forEach((el) => {
-    const title = el.getAttribute('title')
-    if (!title) return
+  const el = document.querySelector(`#${id} > wave > region`)
+  if (!el) return
 
-    const [start, end] = title.split('-')
-    const startS = getSeconds(start)
-    const endS = getSeconds(end)
-    const regionDuration = endS - startS
+  const title = el.getAttribute('title')
+  if (!title) return
 
-    const width = Math.round(regionDuration / duration * 100)
-    const offset = Math.round(startS / duration * 100)
+  const [start, end] = title.split('-')
+  const startS = getSeconds(start)
+  const endS = getSeconds(end)
 
-    // eslint-disable-next-line
-    el.style.width = `${width}%`
-    // eslint-disable-next-line
-    el.style.left = `${offset}%`
-  })
+  const regionLeft = el.cloneNode(true)
+  const leftWidth = Math.round(startS / duration * 100)
+  // eslint-disable-next-line
+  regionLeft.style.width = `${leftWidth}%`
+
+  const regionRight = el.cloneNode(true)
+  const rightWidth = Math.round((duration - endS) / duration * 100) - 0.25
+  const offset = Math.round(endS / duration * 100)
+  // eslint-disable-next-line
+  regionRight.style.width = `${rightWidth}%`
+  regionRight.style.left = `${offset}%`
+
+  const parent = document.querySelector(`#${id} > wave`)
+  parent.appendChild(regionLeft)
+  parent.appendChild(regionRight)
+  el.remove()
 }
 
 export default {

@@ -13,7 +13,7 @@
               .flex-row.align-center
                 span Tempo
                 .p5-side
-                b-form-input(type="range" @change="tempoChanged" min="1" max="500" :value="tempo * 100")
+                b-form-input(type="range" @change="tempoChanged" min="10" max="500" step="10" :value="tempo * 100")
               .p20-side
               div(v-if="allReady")
                 .flex-row.align-center
