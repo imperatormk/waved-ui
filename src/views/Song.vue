@@ -9,12 +9,12 @@
                 span Pitch
                 .p5-side
                 b-form-select(v-model="pitch" :options="pitches")
-              .p15-side
+              .p10-side
               .flex-row.align-center
                 span.space-nowrap {{ getTempoLabel }}
                 .p5-side
                 b-form-input(type="range" @change="tempoChanged" min="10" max="200" step="10" :value="tempo * 100")
-              .p15-side
+              .p10-side
               div(v-if="allReady")
                 .flex-row.align-center
                   div
@@ -108,7 +108,7 @@ export default {
     },
     getTempoLabel() {
       if (this.tempo === 1) return 'Tempo'
-      return `Tempo (${Math.round(this.tempo * 100)} %)`
+      return `Tempo (${Math.round(this.tempo * 100)}%)`
     }
   },
   methods: {
