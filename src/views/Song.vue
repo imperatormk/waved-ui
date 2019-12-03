@@ -12,8 +12,9 @@
               .p20-side
               .flex-row.align-center
                 span Tempo
+                span(v-if="tempo !== 1") &nbsp; ({{ tempo * 100 }} %)
                 .p5-side
-                b-form-input(type="range" @change="tempoChanged" min="10" max="500" step="10" :value="tempo * 100")
+                b-form-input(type="range" @change="tempoChanged" min="10" max="200" step="10" :value="tempo * 100")
               .p20-side
               div(v-if="allReady")
                 .flex-row.align-center
@@ -134,7 +135,7 @@ export default {
           loop: true,
           dragSelection: false,
           resizeSelection: false,
-          color: 'rgba(0,0,0,0.25)'
+          color: 'rgba(0,0,0,0.35)'
         })
       }
     },

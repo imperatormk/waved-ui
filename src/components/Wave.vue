@@ -60,19 +60,18 @@ const hydrateRegions = (id, duration) => {
 
   const regionLeft = el.cloneNode(true)
   const leftWidth = Math.round(startS / duration * 100)
-  // eslint-disable-next-line
   regionLeft.style.width = `${leftWidth}%`
 
   const regionRight = el.cloneNode(true)
-  const rightWidth = Math.round((duration - endS) / duration * 100) - 0.25
+  const rightWidth = Math.round((duration - endS) / duration * 100)
   const offset = Math.round(endS / duration * 100)
-  // eslint-disable-next-line
   regionRight.style.width = `${rightWidth}%`
   regionRight.style.left = `${offset}%`
 
   const parent = document.querySelector(`#${id} > wave`)
   parent.appendChild(regionLeft)
   parent.appendChild(regionRight)
+  parent.style.overflow = 'hidden'
   el.remove()
 }
 
