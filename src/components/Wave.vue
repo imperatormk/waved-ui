@@ -59,9 +59,11 @@ const hydrateRegions = (id, duration) => {
     const regionDuration = endS - startS
 
     const width = Math.round(regionDuration / duration * 100)
-    el.style.width = `${width}%`
-
     const offset = Math.round(startS / duration * 100)
+
+    // eslint-disable-next-line
+    el.style.width = `${width}%`
+    // eslint-disable-next-line
     el.style.left = `${offset}%`
   })
 }
