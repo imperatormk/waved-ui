@@ -66,6 +66,9 @@ export default {
   },
   beforeDestroy() {
     document.body.onkeyup = null
+    if (this.playing) {
+      this.togglePlay({ type: 'spacebar' })
+    }
   },
   data: () => ({
     song: null,

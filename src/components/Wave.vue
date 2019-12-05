@@ -58,15 +58,19 @@ const hydrateRegions = (id, duration) => {
   const startS = getSeconds(start)
   const endS = getSeconds(end)
 
-  const regionLeft = el.cloneNode(true)
-  const leftWidth = Math.round(startS / duration * 100)
+  const regionLeft = el.cloneNode(false)
+  const leftWidth = startS / duration * 100
   regionLeft.style.width = `${leftWidth}%`
+  regionLeft.style.cursor = 'default'
+  regionLeft.title = ''
 
-  const regionRight = el.cloneNode(true)
-  const rightWidth = Math.round((duration - endS) / duration * 100)
-  const offset = Math.round(endS / duration * 100)
+  const regionRight = el.cloneNode(false)
+  const rightWidth = (duration - endS) / duration * 100
+  const offset = endS / duration * 100
   regionRight.style.width = `${rightWidth}%`
   regionRight.style.left = `${offset}%`
+  regionRight.style.cursor = 'default'
+  regionRight.title = ''
 
   const parent = document.querySelector(`#${id} > wave`)
   parent.appendChild(regionLeft)
