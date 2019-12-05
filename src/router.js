@@ -10,6 +10,8 @@ import AdminDashboard from '@/views/admin/AdminDashboard'
 import UserDashboard from '@/views/user/UserDashboard'
 import ManageSong from '@/views/admin/ManageSong'
 
+import ThankYou from '@/views/ThankYou'
+
 Vue.use(Router)
 
 const routeParamToNumber = (params, key) => {
@@ -81,6 +83,11 @@ export default new Router({
       props: route => ({
         ...routeParamToNumber(route.params, 'songId')
       })
+    },
+    {
+      path: '/thankyou',
+      name: 'thankyou',
+      component: ThankYou
     }
   ]
 })

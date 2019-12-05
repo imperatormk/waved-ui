@@ -47,11 +47,8 @@
 
 <script>
 import Api from '@/services/api'
-
-const openInNewTab = (url) => {
-  const win = window.open(url, '_blank')
-  win.focus()
-}
+// eslint-disable-next-line
+import { openInNewTab } from '@/helpers'
 
 export default {
   created() {

@@ -20,7 +20,7 @@
                   div
                     b-button(@click.prevent="togglePlay") {{ !playing ? 'Play' : 'Pause' }}
                   .p5-left
-                    b-button(@click.prevent="collectData" :disabled="preparing") Prepare
+                    b-button(@click.prevent="collectData" :disabled="preparing") Purchase
         Wave(
           @ready="onWaveReady"
           @export="exportAcc"
@@ -43,6 +43,9 @@
 <script>
 import Wave from '@/components/Wave'
 import Api from '@/services/api'
+
+// eslint-disable-next-line
+import { openInNewTab } from '@/helpers'
 
 const REGION_DURATION = 30
 
@@ -184,8 +187,15 @@ export default {
       }
       this.preparing = true
       Api.processTracks(this.songId, data)
-        .then(() => {
-          this.$router.push({ name: 'userDashboard' })
+        .then((processing) => {
+          const pcsId = processing.id
+          Api.orderItem(pcsId)
+            .then((result) => {
+              const { paymentUrl } = result
+              if (paymentUrl) {
+                openInNewTab(paymentUrl)
+              }
+            })
         })
         .finally(() => {
           this.preparing = false
