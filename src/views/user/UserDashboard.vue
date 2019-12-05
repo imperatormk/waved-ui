@@ -15,8 +15,8 @@
           hover
           small
         )
-          template(slot="show_details" slot-scope="row")
-            b-button(@click="row.toggleDetails" size="sm") {{ row.detailsShowing ? 'Hide' : 'Show' }} details
+          template(v-slot:cell(actions)="data")
+            b-button(@click="toggleDetails(data.item)" size="sm") {{ data.item._showDetails ? 'Hide' : 'Show' }} details
           template(slot="row-details" slot-scope="row")
             b-card
               .flex-row
@@ -75,8 +75,8 @@ export default {
       label: 'Date'
     },
     {
-      key: 'show_details',
-      label: ''
+      key: 'actions',
+      label: 'Actions'
     }],
     processings: [],
     loaded: false
@@ -107,6 +107,10 @@ export default {
             openInNewTab(paymentUrl)
           }
         })
+    },
+    toggleDetails(row) {
+      // eslint-disable-next-line
+      row._showDetails = !row._showDetails
     }
   }
 }
