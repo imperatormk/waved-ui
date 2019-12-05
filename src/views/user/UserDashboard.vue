@@ -29,7 +29,9 @@
                   .p5
                   b-button(@click="orderItem(row.item)") Order now
                 .flex-col.m5(v-else-if="row.item.status === 'PREPARING'")
-                  span Track is still processing...
+                  span Track is still processing, please check again soon.
+                .flex-col.m5(v-else-if="row.item.status === 'BROKEN'")
+                  span Something gone wrong, please contact admin or try again.
                 .flex-1
           template(slot="empty")
             span Nothing to see here...
