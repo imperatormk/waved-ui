@@ -45,7 +45,7 @@ import Wave from '@/components/Wave'
 import Api from '@/services/api'
 
 // eslint-disable-next-line
-import { openInNewTab } from '@/helpers'
+import { gotoUrl } from '@/helpers'
 
 const REGION_DURATION = 30
 
@@ -196,7 +196,7 @@ export default {
             .then((result) => {
               const { paymentUrl } = result
               if (paymentUrl) {
-                openInNewTab(paymentUrl)
+                gotoUrl(paymentUrl, true)
               }
             })
         })

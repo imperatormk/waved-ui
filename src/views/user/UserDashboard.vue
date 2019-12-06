@@ -50,7 +50,7 @@
 <script>
 import Api from '@/services/api'
 // eslint-disable-next-line
-import { openInNewTab } from '@/helpers'
+import { gotoUrl } from '@/helpers'
 
 export default {
   created() {
@@ -103,7 +103,7 @@ export default {
         .then((result) => {
           const { paymentUrl } = result
           if (paymentUrl) {
-            openInNewTab(paymentUrl)
+            gotoUrl(paymentUrl, false)
           }
         })
     },

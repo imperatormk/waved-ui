@@ -1,7 +1,8 @@
-const openInNewTab = (url) => {
-  const win = window.open(url, '_blank')
+const gotoUrl = (url, newTab) => {
+  const param = newTab ? '_blank' : ''
+  const win = window.open(url, param)
   win.focus()
 }
 
 // eslint-disable-next-line
-export { openInNewTab }
+export { gotoUrl }
