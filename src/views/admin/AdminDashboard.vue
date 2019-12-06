@@ -82,6 +82,7 @@ export default {
     songFields: [
       { key: 'title', label: 'Title' },
       { key: 'artist', label: 'Artist' },
+      { key: 'slug', label: 'Tag' },
       { key: 'status', label: 'Status' },
       { key: 'actions', label: 'Actions' }
     ],

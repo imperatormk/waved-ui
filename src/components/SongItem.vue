@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     gotoSong() {
-      this.$router.push({ name: 'song', params: { songId: this.song.id } })
+      this.$router.push({ name: 'song', params: { slug: this.song.slug } })
     }
   }
 }

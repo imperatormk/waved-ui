@@ -70,6 +70,14 @@ export default {
         return Promise.reject(data)
       })
   },
+  getSongBySlug(slug, pitch) {
+    return http.get(`/songs/${slug}`, { params: { pitch, idFld: 'slug' } })
+      .then(resp => resp.data)
+      .catch((err) => {
+        const { data } = err.response
+        return Promise.reject(data)
+      })
+  },
   getProcessings(params) {
     return getAuthHeaders({ params })
       .then(options => http.get('/processings', options))

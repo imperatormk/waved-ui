@@ -51,8 +51,8 @@ const REGION_DURATION = 30
 
 export default {
   props: {
-    songId: {
-      type: Number,
+    slug: {
+      type: String,
       required: true
     }
   },
@@ -149,8 +149,8 @@ export default {
       }
     },
     getSong() {
-      const { songId } = this
-      return Api.getSong(songId, this.pitch)
+      const { slug } = this
+      return Api.getSongBySlug(slug, this.pitch)
         .then((song) => {
           this.song = song
           this.tracks = song.tracks
@@ -189,7 +189,7 @@ export default {
         }
       }
       this.preparing = true
-      Api.processTracks(this.songId, data)
+      Api.processTracks(this.song.id, data)
         .then((processing) => {
           const pcsId = processing.id
           Api.orderItem(pcsId)

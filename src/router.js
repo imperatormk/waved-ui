@@ -54,12 +54,10 @@ export default new Router({
       component: Register
     },
     {
-      path: '/songs/:songId',
+      path: '/songs/:slug',
       name: 'song',
       component: Song,
-      props: route => ({
-        ...routeParamToNumber(route.params, 'songId')
-      })
+      props: true
     },
     {
       path: '/admin',
