@@ -15,6 +15,8 @@
           hover
           small
         )
+          template(v-slot:cell(createdAt)="data")
+            span {{ formatDate(data.item.createdAt) }}
           template(v-slot:cell(actions)="data")
             b-button(@click="toggleDetails(data.item)" size="sm") {{ data.item._showDetails ? 'Hide' : 'Show' }} details
           template(slot="row-details" slot-scope="row")
@@ -50,7 +52,7 @@
 <script>
 import Api from '@/services/api'
 // eslint-disable-next-line
-import { gotoUrl } from '@/helpers'
+import { gotoUrl, formatDate } from '@/helpers'
 
 export default {
   created() {
@@ -83,7 +85,11 @@ export default {
   methods: {
     fetchData() {
       this.loaded = false
-      Api.getProcessings(this.pagination)
+
+      const params = { ...this.pagination }
+      params.order = 'desc'
+
+      Api.getProcessings(params)
         .then((resp) => {
           this.processings = resp.content.map(processing => ({
             ...processing,
@@ -110,6 +116,10 @@ export default {
     toggleDetails(row) {
       // eslint-disable-next-line
       row._showDetails = !row._showDetails
+    },
+    formatDate(date) {
+      const format = 'DD.MM.YYYY HH:mm'
+      return formatDate(date, format)
     }
   }
 }
