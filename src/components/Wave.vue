@@ -106,7 +106,9 @@ export default {
 
     this.waveEvents = {
       ready: this.onReady,
-      seek: this.newSeek
+      seek: this.newSeek,
+      play: this.onPlay,
+      pause: this.onPause,
     }
 
     this.$nextTick(() => {
@@ -157,6 +159,14 @@ export default {
     playing: false,
     volume: 100,
     panning: 0,
+    soundtouch: {
+      instance: null,
+      source: null,
+      node: null,
+      pos: null,
+      diff: 0,
+      length: null
+    },
     loading: true
   }),
   computed: {
@@ -234,6 +244,27 @@ export default {
         this.wavesurfer.seekTo(value)
       })
     },
+    onPlay() {
+      // eslint-disable-next-line
+      this.soundtouch.pos = ~~(this.wavesurfer.backend.getPlayedPercents() * this.soundtouch.length)
+
+      const tempo = this.wavesurfer.getPlaybackRate()
+      this.soundtouch.instance.tempo = tempo
+
+      if (tempo === 1) {
+        this.wavesurfer.backend.disconnectFilters()
+      } else {
+        if (!this.soundtouch.node) {
+          const filter = new window.soundtouch.SimpleFilter(this.soundtouch.source, this.soundtouch.instance)
+          this.soundtouch.node = window.soundtouch.getWebAudioNode(this.wavesurfer.backend.ac, filter)
+        }
+        this.wavesurfer.backend.setFilter(this.soundtouch.node)
+      }
+    },
+    onPause() {
+      const { node } = this.soundtouch
+      if (node) node.disconnect()
+    },
     onCollectData() {
       const tempo = this.wavesurfer.getPlaybackRate()
       const volume = this.wavesurfer.getVolume()
@@ -252,21 +283,61 @@ export default {
       this.$emit('export', data)
     },
     newSeek(value) {
+      // eslint-disable-next-line
+      this.soundtouch.pos = ~~(this.wavesurfer.backend.getPlayedPercents() * this.soundtouch.length)
       this.$emit('newseek', value)
     },
     onReady() {
-      if (this.regions.length) {
-        const firstRegion = this.regions[0]
-        const duration = this.wavesurfer.getDuration()
-        const startTime = firstRegion.start
-        const progress = startTime / duration
-        this.wavesurfer.seekTo(progress)
+      const setupSoundtouch = () => {
+        const instance = new window.soundtouch.SoundTouch(this.wavesurfer.backend.ac.sampleRate)
+        const source = {
+          extract: (target, numFrames, position) => {
+            if (this.soundtouch.pos != null) {
+              this.soundtouch.diff = this.soundtouch.pos - position
+              this.soundtouch.pos = null
+            }
+            // eslint-disable-next-line
+            position += this.soundtouch.diff
 
-        const waveId = `wave${this.track.id}`
-        this.$nextTick(() => {
-          hydrateRegions(waveId, this.songDuration)
-        })
+            const { buffer } = this.wavesurfer.backend
+            const channels = buffer.numberOfChannels
+            const l = buffer.getChannelData(0)
+            const r = channels > 1 ? buffer.getChannelData(1) : l
+
+            for (let i = 0; i < numFrames; i += 1) {
+              // eslint-disable-next-line
+              target[i * 2] = l[i + position]
+              // eslint-disable-next-line
+              target[i * 2 + 1] = r[i + position]
+            }
+
+            return Math.min(numFrames, this.soundtouch.length - position)
+          }
+        }
+
+        this.soundtouch.instance = instance
+        this.soundtouch.source = source
+        this.soundtouch.length = this.wavesurfer.backend.buffer.length
       }
+
+      const setupWave = () => {
+        if (this.regions.length) {
+          const firstRegion = this.regions[0]
+          const duration = this.wavesurfer.getDuration()
+          const startTime = firstRegion.start
+          const progress = startTime / duration
+          this.wavesurfer.seekTo(progress)
+
+          const waveId = `wave${this.track.id}`
+          this.$nextTick(() => {
+            hydrateRegions(waveId, this.songDuration)
+          })
+        }
+      }
+
+      setupSoundtouch()
+      setupWave()
+
       this.loading = false
       this.$emit('ready')
     },

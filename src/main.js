@@ -16,6 +16,8 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import Layout from '@/components/Layout'
 
+import '@/assets/soundtouch'
+
 Vue.use(BootstrapVue)
 Vue.use(ImageUploader)
 
