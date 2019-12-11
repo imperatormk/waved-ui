@@ -66,7 +66,12 @@ export default {
       this.criteria = criteria
     },
     getSongs() {
-      Api.getSongs({ size: 10, order: 'DESC' }, this.criteria)
+      const criteriaObj = {
+        ...this.criteria,
+        unpublished: false
+      }
+
+      Api.getSongs({ size: 10, order: 'DESC' }, criteriaObj)
         .then((songs) => {
           this.songs = songs.content
         })

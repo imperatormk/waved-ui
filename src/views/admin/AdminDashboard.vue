@@ -23,6 +23,10 @@
               .p5
               b-button(@click="deleteSong(data.item.id)" size="sm" variant="danger")
                 font-awesome-icon(:icon="songToDelete !== data.item.id ? 'trash-alt' : 'check'" fixed-width)
+              template(v-if="!data.item.published")
+                .p5
+                b-button(@click="publishSong(data.item.id)" size="sm" variant="primary")
+                  font-awesome-icon(icon="rocket" fixed-width)
           template(slot="empty")
             span Nothing to see here...
           template(slot="table-busy")
@@ -104,7 +108,8 @@ export default {
       this.loaded = false
       this.newGenreVisible = false
 
-      const songsPromise = Api.getSongs(this.pagination)
+      const criteriaObj = { unpublished: true }
+      const songsPromise = Api.getSongs(this.pagination, criteriaObj)
         .then((resp) => {
           this.songs = resp.content
           this.totalElements = resp.totalElements
@@ -125,6 +130,10 @@ export default {
     },
     gotoEditSong(songId) {
       this.$router.push({ name: 'editSong', params: { songId } })
+    },
+    publishSong(songId) {
+      Api.publishSong(songId)
+        .then(() => this.fetchData())
     },
     deleteSong(songId) {
       if (this.songToDelete !== songId) {

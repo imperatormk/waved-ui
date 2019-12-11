@@ -198,6 +198,20 @@ export default {
         return Promise.reject(data)
       })
   },
+  publishSong(songId) {
+    const song = {
+      id: songId,
+      published: true
+    }
+
+    return getAuthHeaders()
+      .then(options => http.put('/songs', song, options))
+      .then(resp => resp.data)
+      .catch((err) => {
+        const { data } = err.response
+        return Promise.reject(data)
+      })
+  },
   deleteSong(songId) {
     return getAuthHeaders()
       .then(options => http.delete(`/songs/${songId}`, options))
