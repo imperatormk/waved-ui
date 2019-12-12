@@ -1,6 +1,6 @@
 <template lang="pug">
   b-container
-    Navbar
+    Navbar(:logo="logoConfig")
     br
     .text-white(v-if="title")
       h3 {{ title }}
@@ -8,15 +8,32 @@
         h4 {{ subtitle }}
     br
     slot
+    .p20
 </template>
 
 <script>
+import Api from '@/services/api'
 import Navbar from '@/components/Navbar'
 
 export default {
   props: {
     title: String,
     subtitle: String
+  },
+  created() {
+    Api.loadConfig()
+      .then((config) => {
+        this.config = config
+      })
+  },
+  data: () => ({
+    config: []
+  }),
+  computed: {
+    logoConfig() {
+      const logo = this.config.find(item => item.key === 'LOGO')
+      return logo || null
+    }
   },
   components: {
     Navbar

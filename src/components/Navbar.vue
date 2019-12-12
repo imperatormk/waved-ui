@@ -1,6 +1,8 @@
 <template lang="pug">
   b-navbar(toggleable="lg" variant="light" sticky)
-    b-navbar-brand(:to="{ name: 'home' }") Waved
+    b-navbar-brand(:to="{ name: 'home' }")
+      img(v-if="logo" :src="logoSrc" class="d-inline-block align-top" alt="Logo" height="30")
+      span(v-else) Waved
     b-navbar-toggle(target="nav-collapse")
 
     b-collapse(id="nav-collapse" is-nav)
@@ -33,7 +35,13 @@
 import Api from '@/services/api'
 import { instruments } from '@/data'
 
+const fallbackServerUrl = 'https://studiodoblo.de:7000'
+const serverUrl = process.env.VUE_APP_SERVER_URL || fallbackServerUrl
+
 export default {
+  props: {
+    logo: Object
+  },
   data: () => ({
     instruments,
     genres: []
@@ -47,6 +55,10 @@ export default {
     },
     loggedUser() {
       return this.$store.state.authentication.user
+    },
+    logoSrc() {
+      if (!this.logo) return null
+      return `${serverUrl}/static/system/${this.logo.value}`
     }
   },
   methods: {
