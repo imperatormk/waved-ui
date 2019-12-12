@@ -250,5 +250,29 @@ export default {
         const { data } = err.response
         return Promise.reject(data)
       })
+  },
+  loadConfig() {
+    return http.get('/config')
+      .then(resp => resp.data)
+      .catch((err) => {
+        const { data } = err.response
+        return Promise.reject(data)
+      })
+  },
+  updateLogo(logo) {
+    const logoPromise = (() => {
+      const formData = new FormData()
+      formData.append('logo', logo)
+
+      return promisedXhr('/api/config/logo', {
+        method: 'POST',
+        body: formData
+      })
+    })()
+
+    return Promise.all([logoPromise])
+  },
+  updateConfig(config) {
+    return Promise.resolve(config)
   }
 }

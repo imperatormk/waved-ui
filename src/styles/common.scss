@@ -109,7 +109,7 @@
     padding-top: $i * 5px
   }
 }
-// .p5-top, .p10-top...
+// .p5-bot, .p10-bot...
 @for $i from 1 through 20 {
   .p#{$i * 5}#{-bot} {
     padding-bottom: $i * 5px;

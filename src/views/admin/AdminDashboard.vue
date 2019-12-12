@@ -67,11 +67,26 @@
             span Nothing to see here...
           template(slot="table-busy")
             span Loading...
+    .m10
+    b-card
+      .flex-row.space-between.align-center(slot="header")
+        span Settings
+        b-button(@click="saveConfig" variant="primary") Save settings
+      .flex-col
+        .flex-row.w50.space-between
+          span.font-weight-bold Logo
+          .flex-col
+            img.p5-bot(v-if="logoConfig" :src="logoSrc" width="200")
+            span(v-else) N/A
+            input(v-if="loaded" type="file" @change="logoBrowsed")
 </template>
 
 <script>
 import Api from '@/services/api'
 import NewGenre from '@/components/admin/NewGenre'
+
+const fallbackServerUrl = 'https://studiodoblo.de:7000'
+const serverUrl = process.env.VUE_APP_SERVER_URL || fallbackServerUrl
 
 export default {
   created() {
@@ -97,6 +112,7 @@ export default {
     ],
     songs: [],
     genres: [],
+    config: [],
     newGenreVisible: false,
     genreToEdit: null,
     songToDelete: null,
@@ -120,7 +136,12 @@ export default {
           this.genres = genres
         })
 
-      Promise.all([songsPromise, genresPromise])
+      const configPromise = Api.loadConfig()
+        .then((config) => {
+          this.config = config
+        })
+
+      Promise.all([songsPromise, genresPromise, configPromise])
         .finally(() => {
           this.loaded = true
         })
@@ -168,6 +189,52 @@ export default {
         Api.deleteGenre(genreId)
           .then(() => this.fetchData())
       }
+    },
+    logoBrowsed(e) {
+      const { files } = e.target
+      const logo = files[0]
+      if (!logo) return
+
+      const reader = new FileReader()
+      reader.onload = (re) => {
+        const src = re.target.result
+        const logoObj = {
+          key: 'LOGO',
+          value: src,
+          file: logo
+        }
+        if (this.logoConfig) {
+          this.config = this.config.filter(item => item.key !== 'LOGO')
+        }
+        this.config.push(logoObj)
+      }
+      reader.readAsDataURL(logo)
+    },
+    saveConfig() {
+      const promises = []
+      if (this.logoConfig && this.logoConfig.file) {
+        const logoPromise = Api.updateLogo(this.logoConfig.file)
+        promises.push(logoPromise)
+      }
+      const otherConfig = this.config.filter(item => item.key !== 'LOGO')
+      const configPromise = Api.updateConfig(otherConfig)
+      promises.push(configPromise)
+
+      Promise.all(promises)
+        .finally(() => {
+          this.fetchData()
+        })
+    }
+  },
+  computed: {
+    logoConfig() {
+      const logo = this.config.find(item => item.key === 'LOGO')
+      return logo || null
+    },
+    logoSrc() {
+      const logo = this.logoConfig
+      if (!logo) return null
+      return logo.file ? logo.value : `${serverUrl}/static/system/${logo.value}`
     }
   },
   components: {
