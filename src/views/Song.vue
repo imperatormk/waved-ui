@@ -142,8 +142,8 @@ export default {
           start,
           end: start + REGION_DURATION,
           loop: true,
-          dragSelection: false,
-          resizeSelection: false,
+          drag: false,
+          resize: false,
           color: 'rgba(0,0,0,0.35)'
         })
       }
