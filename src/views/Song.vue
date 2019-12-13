@@ -135,12 +135,13 @@ export default {
     loadRegions() {
       const shouldDisplay = !this.loggedUser || !this.loggedUser.isAdmin
       if (shouldDisplay) {
-        const { duration } = this.song
-        const start = Math.floor(duration / 2)
+        const { duration, demoArea } = this.song
+        const start = demoArea ? demoArea.start : Math.floor(duration / 2)
+        const regionDuration = demoArea ? demoArea.duration : REGION_DURATION
 
         this.regions.push({
           start,
-          end: start + REGION_DURATION,
+          end: start + regionDuration,
           loop: true,
           drag: false,
           resize: false,
