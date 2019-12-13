@@ -42,7 +42,8 @@
           p Demo area
           .flex-row.align-center(style="background-color:#C14242")
             .w100(ref="wave" id="wavedemo")
-          span Start: {{ formattedDemoArea.start }} Duration: {{ formattedDemoArea.duration }}
+          div Start: {{ formattedDemoArea.start }}
+          .narrow-line Duration: {{ formattedDemoArea.duration }}
           br
           br
         b-button(type="submit" :disabled="submitting" variant="primary") Submit
@@ -201,6 +202,9 @@ export default {
       if (!lastTrack) return
 
       const { file } = lastTrack
+      this.retrieveTrackDuration(file)
+    },
+    retrieveTrackDuration(file) {
       getFileMeta(file)
         .then(({ duration, buffer }) => {
           if (!this.duration || duration < this.duration) {
@@ -236,10 +240,10 @@ export default {
 
       this.submitErr = ''
       const {
-        song, thumbnail, tracks, demoArea
+        song, thumbnail, tracks, duration, demoArea
       } = this
       const reqObj = {
-        song, thumbnail, tracks, demoArea
+        song, thumbnail, tracks, duration, demoArea
       }
 
       this.submitting = true
