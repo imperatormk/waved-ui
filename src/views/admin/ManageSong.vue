@@ -45,7 +45,6 @@
           div Start: {{ formattedDemoArea.start }}
           .narrow-line Duration: {{ formattedDemoArea.duration }}
           br
-          br
         b-button(type="submit" :disabled="submitting" variant="primary") Submit
 </template>
 
@@ -242,11 +241,13 @@ export default {
       const {
         song, thumbnail, tracks, duration, demoArea
       } = this
-      const reqObj = {
-        song, thumbnail, tracks, duration, demoArea
-      }
 
+      song.duration = duration
+      song.demoArea = demoArea
+
+      const reqObj = { song, thumbnail, tracks }
       this.submitting = true
+
       const onProgress = ({ track, progress }) => {
         this.$emit('progress', { progress, track })
       }
