@@ -1,7 +1,7 @@
 <template lang="pug">
   b-card(no-body style="padding:2px;")
     .p5(v-if="loading")
-      b-progress(:id="'pb' + track.id" :value="1" :max="1" animated)
+      b-progress(:id="'pb' + track.id" :value="1" :max="1" animated height="0.7rem")
     .flex-row.align-center.font-black
       .w18.flex-row.align-center.space-between.p10-side
         span.narrow-line {{ instrumentTitle }}
@@ -288,9 +288,7 @@ export default {
       this.$emit('newseek', value)
     },
     onReady() {
-      const setupSoundtouch = (bypass) => {
-        if (bypass) return // allow short-circuit
-
+      const setupSoundtouch = () => {
         const instance = new window.soundtouch.SoundTouch(this.wavesurfer.backend.ac.sampleRate)
         const source = {
           extract: (target, numFrames, position) => {
@@ -301,7 +299,7 @@ export default {
             // eslint-disable-next-line
             position += this.soundtouch.diff
 
-            const { buffer } = this.wavesurfer.backend
+            const buffer = this.wavesurfer.backend.buffer || {}
             const channels = buffer.numberOfChannels
             const l = buffer.getChannelData(0)
             const r = channels > 1 ? buffer.getChannelData(1) : l
@@ -337,7 +335,7 @@ export default {
         }
       }
 
-      setupSoundtouch(true)
+      setupSoundtouch()
       setupWave()
 
       this.loading = false
