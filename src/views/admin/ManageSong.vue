@@ -33,12 +33,27 @@
         b-input-group(prepend="Price ($)")
           b-form-input(v-model.number="song.price" type="number" min="0.01" step="0.01" required)
         br
-        template(v-if="!songId")
-          TrackUpload(
-            @filesChanged="filesChanged"
-            :eventBus="getEventBus()")
+        TrackUpload(
+          @filesChanged="filesChanged"
+          :eventBus="getEventBus()")
+        br
+        template(v-if="existingTracks.length")
+          b-table(
+            id="processing-table"
+            :items="existingTracks"
+            current-page="1"
+            :fields="[{ key: 'instrument', label: 'Instrument' }, { key: 'actions', label: 'Actions' }]"
+            hover
+            small
+          )
+            template(v-slot:cell(instrument)="data")
+              span {{ getTrackFullTitle(data.item) }}
+            template(v-slot:cell(actions)="data")
+              .flex-row
+                b-button(@click="removeTrack(data.item.id)" size="sm" :variant="data.item.markedForDeletion ? 'success' : 'danger'")
+                  font-awesome-icon(:icon="!data.item.markedForDeletion ? 'trash-alt' : 'trash-restore-alt'" fixed-width)
           br
-        .p5-left(v-if="duration")
+        .p5-left(v-if="!songId && duration")
           p Demo area
           .flex-row.align-center(style="background-color:#C14242")
             .w100(ref="wave" id="wavedemo")
@@ -54,6 +69,9 @@ import RegionPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min'
 
 import TrackUpload from '@/components/TrackUpload'
 import Api from '@/services/api'
+
+// eslint-disable-next-line
+import { capitalizeLetter } from '@/helpers'
 
 const fallbackServerUrl = 'https://studiodoblo.de:7000'
 const serverUrl = process.env.VUE_APP_SERVER_URL || fallbackServerUrl
@@ -128,6 +146,7 @@ export default {
     },
     genres: [],
     tracks: [],
+    existingTracks: [],
     thumbnail: null,
     duration: null,
     durationTrack: null,
@@ -186,22 +205,26 @@ export default {
       Api.getSong(songId, 0)
         .then((song) => {
           const {
-            id, title, artist, thumbnail, price
+            id, title, artist, thumbnail, price, tracks
           } = song
           const songObj = {
             id, title, artist, thumbnail, price
           }
           songObj.genres = song.genres.map(item => item.id)
           this.song = songObj
+          this.existingTracks = tracks
         })
     },
     filesChanged(tracks) {
       this.tracks = tracks || []
-      const lastTrack = tracks[this.tracks.length - 1]
-      if (!lastTrack) return
 
-      const { file } = lastTrack
-      this.retrieveTrackDuration(file)
+      if (!this.songId) {
+        const lastTrack = tracks[this.tracks.length - 1]
+        if (!lastTrack) return
+
+        const { file } = lastTrack
+        this.retrieveTrackDuration(file)
+      }
     },
     retrieveTrackDuration(file) {
       getFileMeta(file)
@@ -218,14 +241,9 @@ export default {
     },
     songSubmitted(e) {
       e.preventDefault()
-
-      if (!this.songId) {
-        this.addSong()
-      } else {
-        this.updateSong()
-      }
+      this.upsertSong()
     },
-    addSong() {
+    upsertSong() {
       const hasTracks = !!this.tracks.length
       const allTracksHaveInstrument = !this.tracks.find((track) => {
         const { instrument } = track.metadata
@@ -235,7 +253,8 @@ export default {
       })
       const tracksValid = hasTracks && allTracksHaveInstrument
 
-      if (!this.thumbnail || !tracksValid) return
+      const { songId } = this
+      if (!songId && (!this.thumbnail || !tracksValid)) return
 
       this.submitErr = ''
       const {
@@ -243,7 +262,9 @@ export default {
       } = this
 
       song.duration = duration
-      song.demoArea = demoArea
+      if (!songId) song.demoArea = demoArea
+
+      const tracksToDelete = this.existingTracks.filter(item => item.markedForDeletion)
 
       const reqObj = { song, thumbnail, tracks }
       this.submitting = true
@@ -251,22 +272,14 @@ export default {
       const onProgress = ({ track, progress }) => {
         this.$emit('progress', { progress, track })
       }
-      Api.postSong(reqObj, onProgress)
-        .then(() => {
-          this.$router.push({ name: 'adminDashboard' })
-        })
-        .catch((err) => {
-          this.submitErr = err.msg
-        })
-        .finally(() => {
-          this.submitting = false
-        })
-    },
-    updateSong() {
-      const { song, thumbnail } = this
-      const reqObj = { song, thumbnail }
 
-      Api.updateSong(reqObj)
+      const action = songId ? 'updateSong' : 'postSong'
+      const promises = [Api[action](reqObj, onProgress)]
+      if (tracksToDelete.length) {
+        promises.push(Api.deleteTracks(tracksToDelete, songId))
+      }
+
+      Promise.all(promises)
         .then(() => {
           this.$router.push({ name: 'adminDashboard' })
         })
@@ -311,6 +324,21 @@ export default {
         this.demoArea.start = Math.floor(start)
         this.demoArea.duration = Math.floor(end - start)
       })
+    },
+    removeTrack(trackId) {
+      const track = this.existingTracks.find(item => item.id === trackId)
+      if (!track) return
+
+      const totalTrackCount = this.existingTracks.length + this.song.tracks
+      if (totalTrackCount <= 1) return
+
+      this.existingTracks = this.existingTracks.map(item => ({ ...item, markedForDeletion: track.markedForDeletion ? false : item.id === trackId }))
+    },
+    getTrackFullTitle(track) {
+      const { type, name } = track.instrument
+      const namePart = name ? `(${name})` : ''
+      const fullTitle = `${capitalizeLetter(type)} ${namePart}`
+      return fullTitle.trim()
     },
     getEventBus() {
       return this

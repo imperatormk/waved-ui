@@ -45,6 +45,23 @@ const promisedXhr = (url, { method, body, id }, onProgress) => {
   return new Promise(promise)
 }
 
+const forgeTrackPromises = (songId, tracks, onProgress) => {
+  if (!tracks) return []
+  return tracks.map((track) => {
+    const formData = new FormData()
+    const { file, metadata } = track
+
+    formData.append('track', file)
+    formData.append('metadata', JSON.stringify(metadata))
+
+    return promisedXhr(`/api/songs/${songId}/tracks`, {
+      method: 'POST',
+      body: formData,
+      id: metadata.id
+    }, onProgress)
+  })
+}
+
 export default {
   getGenres() {
     return http.get('/genres')
@@ -132,19 +149,7 @@ export default {
       .then((songResult) => {
         const songId = songResult.id
 
-        const trackPromises = tracks.map((track) => {
-          const formData = new FormData()
-          const { file, metadata } = track
-
-          formData.append('track', file)
-          formData.append('metadata', JSON.stringify(metadata))
-
-          return promisedXhr(`/api/songs/${songId}/tracks`, {
-            method: 'POST',
-            body: formData,
-            id: metadata.id
-          }, onProgress)
-        })
+        const trackPromises = forgeTrackPromises(songId, tracks, onProgress)
 
         const thumbnailPromise = (() => {
           const formData = new FormData()
@@ -167,28 +172,43 @@ export default {
         return Promise.reject(data)
       })
   },
-  updateSong(obj) {
-    const { thumbnail, song } = obj
+  updateSong(obj, onProgress = () => {}) {
+    const {
+      thumbnail, song, tracks
+    } = obj
+    const { id } = song
     delete song.thumbnail
+
+    if (!song.id) {
+      const err = { msg: 'invalidSong' }
+      return Promise.reject(err)
+    }
 
     return getAuthHeaders()
       .then(options => http.put('/songs', song, options))
       .then(resp => resp.data)
       .then((songResult) => {
-        if (!thumbnail) return { song: songResult }
+        const promises = []
 
-        const songId = songResult.id
-        const thumbnailPromise = (() => {
-          const formData = new FormData()
-          formData.append('thumbnail', thumbnail)
+        if (thumbnail) {
+          const thumbnailPromise = (() => {
+            const formData = new FormData()
+            formData.append('thumbnail', thumbnail)
 
-          return promisedXhr(`/api/songs/${songId}/thumbnail`, {
-            method: 'POST',
-            body: formData
-          })
-        })()
+            return promisedXhr(`/api/songs/${id}/thumbnail`, {
+              method: 'POST',
+              body: formData
+            })
+          })()
+          promises.push(thumbnailPromise)
+        }
 
-        return Promise.all([thumbnailPromise])
+        if (tracks && tracks.length) {
+          const trackPromises = forgeTrackPromises(id, tracks, onProgress)
+          promises.push(...trackPromises)
+        }
+
+        return Promise.all(promises)
           .then(() => ({
             song: songResult
           }))
@@ -216,6 +236,21 @@ export default {
     return getAuthHeaders()
       .then(options => http.delete(`/songs/${songId}`, options))
       .then(resp => resp.data)
+      .catch((err) => {
+        const { data } = err.response
+        return Promise.reject(data)
+      })
+  },
+  deleteTracks(tracks, songId) {
+    return getAuthHeaders()
+      .then((options) => {
+        if (!tracks.length) return Promise.resolve([])
+        return tracks.map((track) => {
+          const { id } = track
+          return http.delete(`/songs/${songId}/tracks/${id}`, options)
+            .then(resp => resp.data)
+        })
+      })
       .catch((err) => {
         const { data } = err.response
         return Promise.reject(data)

@@ -11,5 +11,12 @@ const formatDate = (date, format) => {
   return moment(date).format(format)
 }
 
+const capitalizeLetter = (str) => {
+  if (!str) return str
+  return `${str[0].toUpperCase()}${str.substring(1)}`
+}
+
 // eslint-disable-next-line
-export { gotoUrl, formatDate }
+export {
+  gotoUrl, formatDate, capitalizeLetter
+}
