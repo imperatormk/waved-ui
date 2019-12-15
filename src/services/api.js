@@ -264,6 +264,14 @@ export default {
         return Promise.reject(data)
       })
   },
+  updateUser(userObj) {
+    return http.post('/accounts/update', userObj)
+      .then(resp => resp.data)
+      .catch((err) => {
+        const { data } = err.response
+        return Promise.reject(data)
+      })
+  },
   downloadProcessing(pcsId, filename) {
     return getAuthHeaders({ responseType: 'blob' })
       .then(options => http.get(`/processings/${pcsId}/download`, options))

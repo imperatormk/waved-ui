@@ -2,6 +2,21 @@
   Layout(title="Dashboard")
     b-card
       .flex-row.space-between.align-center(slot="header")
+        span User settings
+        b-button(@click="updateSettings" variant="primary") Update
+      b-form(ref="userForm")
+        b-alert(:show="!!userSettingsError" variant="danger") {{ userSettingsError }}
+        b-input-group(prepend="Email")
+          b-form-input(v-model="user.email" required autocomplete="new-password")
+        br
+        b-input-group(prepend="Password")
+          b-form-input(v-model="user.password" required placeholder="(unchanged)" type="password" autocomplete="new-password")
+        br
+        b-input-group(v-if="user.password" prepend="Confirm password")
+          b-form-input(v-model="user.confirmPassword" required type="password" autocomplete="new-password")
+    br
+    b-card
+      .flex-row.space-between.align-center(slot="header")
         span Processings
       .flex-col
         b-table(
@@ -57,6 +72,7 @@ import { gotoUrl, formatDate } from '@/helpers'
 export default {
   created() {
     this.fetchData()
+    this.user = { ...this.loggedUser }
   },
   data: () => ({
     pagination: {
@@ -80,8 +96,15 @@ export default {
       label: 'Actions'
     }],
     processings: [],
+    user: {},
+    userSettingsError: '',
     loaded: false
   }),
+  computed: {
+    loggedUser() {
+      return this.$store.state.authentication.user
+    }
+  },
   methods: {
     fetchData() {
       this.loaded = false
@@ -116,6 +139,30 @@ export default {
     toggleDetails(row) {
       // eslint-disable-next-line
       row._showDetails = !row._showDetails
+    },
+    updateSettings() {
+      this.userSettingsError = null
+      const { userForm } = this.$refs
+
+      if (!userForm.checkValidity()) {
+        userForm.reportValidity()
+        return
+      }
+
+      const { email, password, confirmPassword } = this.user
+      if (password) {
+        const valid = password === confirmPassword
+        if (!valid) {
+          this.userSettingsError = 'Passwords do not match'
+          return
+        }
+      }
+
+      const reqObj = { email, password, confirmPassword }
+      Api.updateUser(reqObj)
+        .catch((err) => {
+          this.userSettingsError = err.msg
+        })
     },
     formatDate(date) {
       const format = 'DD.MM.YYYY HH:mm'

@@ -1,6 +1,7 @@
 <template lang="pug">
   b-form(@submit="onSubmit")
-    b-form-input(v-model="genre.name" :state="!!genre.name" placeholder="Name" required)
+    b-input-group(prepend="Name")
+      b-form-input(v-model="genre.name" :state="!!genre.name" required)
     .m10
     b-button(type="submit" :disabled="posting" variant="primary") Submit
 </template>
