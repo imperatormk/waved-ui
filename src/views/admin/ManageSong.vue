@@ -38,7 +38,7 @@
           :eventBus="getEventBus()")
         br
         template(v-if="existingTracks.length")
-          b-table(
+          b-table.no-margin(
             id="processing-table"
             :items="existingTracks"
             current-page="1"
@@ -53,7 +53,7 @@
                 b-button(@click="removeTrack(data.item.id)" size="sm" :variant="data.item.markedForDeletion ? 'success' : 'danger'")
                   font-awesome-icon(:icon="!data.item.markedForDeletion ? 'trash-alt' : 'trash-restore-alt'" fixed-width)
           br
-        .p5-left(v-if="!songId && duration")
+        .p5-left(v-if="hasDurationTrack && loaded")
           p Demo area
           .flex-row.align-center(style="background-color:#C14242")
             .w100(ref="wave" id="wavedemo")
@@ -71,7 +71,7 @@ import TrackUpload from '@/components/TrackUpload'
 import Api from '@/services/api'
 
 // eslint-disable-next-line
-import { capitalizeLetter } from '@/helpers'
+import { capitalizeLetter, getFileMeta, pad2 } from '@/helpers'
 
 const fallbackServerUrl = 'https://studiodoblo.de:7000'
 const serverUrl = process.env.VUE_APP_SERVER_URL || fallbackServerUrl
@@ -84,50 +84,6 @@ const moveInputLabel = () => {
 
   destination.appendChild(source)
 }
-
-const getFileMeta = (file) => {
-  const readerData = new FileReader()
-  const readerBuffer = new FileReader()
-
-  const audioObjHtml = '<audio id="audioObj" src=""></audio>'
-  const div = document.createElement('div')
-  div.innerHTML = audioObjHtml.trim()
-  const audioObj = div.firstChild
-
-  return new Promise((resolve, reject) => {
-    try {
-      let durationVal = null
-      let buffer = null
-
-      readerData.onload = (e) => {
-        audioObj.src = e.target.result
-        audioObj.addEventListener('loadedmetadata', () => {
-          const { duration } = audioObj
-          durationVal = duration
-          if (buffer) {
-            resolve({ duration: durationVal, buffer })
-          }
-        }, false)
-      }
-      readerData.readAsDataURL(file)
-
-      readerBuffer.onload = (e) => {
-        const blob = new window.Blob([new Uint8Array(e.target.result)])
-        buffer = blob
-        if (durationVal != null) {
-          resolve({ duration: durationVal, buffer })
-        }
-      }
-      readerBuffer.readAsArrayBuffer(file)
-    } catch (e) {
-      reject(e)
-    } finally {
-      div.remove()
-    }
-  })
-}
-
-const pad2 = number => (number < 10 ? '0' : '') + number
 
 export default {
   props: {
@@ -149,14 +105,15 @@ export default {
     existingTracks: [],
     thumbnail: null,
     duration: null,
-    durationTrack: null,
+    durationTrack: { url: null, blob: null },
     demoArea: {
       start: 0,
       duration: 30
     },
     wavesurfer: null,
     submitErr: '',
-    submitting: false
+    submitting: false,
+    loaded: false
   }),
   computed: {
     pageTitle() {
@@ -181,6 +138,10 @@ export default {
       const formattedDuration = getFormattedString(durationMinutes, durationSeconds)
 
       return { start: formattedStart, duration: formattedDuration }
+    },
+    hasDurationTrack() {
+      const { durationTrack } = this
+      return durationTrack.url || durationTrack.blob
     }
   },
   watch: {
@@ -200,38 +161,46 @@ export default {
     },
     getSong() {
       const { songId } = this
-      if (!songId) return
+      if (!songId) {
+        this.loaded = true
+        return
+      }
 
+      this.loaded = false
       Api.getSong(songId, 0)
         .then((song) => {
+          this.loaded = true
           const {
-            id, title, artist, thumbnail, price, tracks
+            id, title, artist, thumbnail, price, tracks, duration, demoArea
           } = song
           const songObj = {
-            id, title, artist, thumbnail, price
+            id, title, artist, thumbnail, price, demoArea
           }
           songObj.genres = song.genres.map(item => item.id)
           this.song = songObj
           this.existingTracks = tracks
+          this.duration = duration
+
+          if (tracks.length) {
+            this.durationTrack = { url: tracks[0].url } // no guarantee there is no shorter track than this
+          }
         })
     },
     filesChanged(tracks) {
       this.tracks = tracks || []
 
-      if (!this.songId) {
-        const lastTrack = tracks[this.tracks.length - 1]
-        if (!lastTrack) return
+      const lastTrack = tracks[this.tracks.length - 1]
+      if (!lastTrack) return
 
-        const { file } = lastTrack
-        this.retrieveTrackDuration(file)
-      }
+      const { file } = lastTrack
+      this.retrieveTrackDuration(file)
     },
     retrieveTrackDuration(file) {
       getFileMeta(file)
         .then(({ duration, buffer }) => {
           if (!this.duration || duration < this.duration) {
             this.duration = Math.floor(duration)
-            this.durationTrack = buffer
+            this.durationTrack = { blob: buffer }
           }
         })
     },
@@ -261,8 +230,10 @@ export default {
         song, thumbnail, tracks, duration, demoArea
       } = this
 
-      song.duration = duration
-      if (!songId) song.demoArea = demoArea
+      if (!duration && !this.song.duration) return
+
+      if (duration) song.duration = duration
+      if (demoArea) song.demoArea = demoArea
 
       const tracksToDelete = this.existingTracks.filter(item => item.markedForDeletion)
 
@@ -281,7 +252,11 @@ export default {
 
       Promise.all(promises)
         .then(() => {
-          this.$router.push({ name: 'adminDashboard' })
+          if (this.songId) {
+            this.getSong()
+          } else {
+            this.$router.push({ name: 'adminDashboard' })
+          }
         })
         .catch((err) => {
           this.submitErr = err.msg
@@ -290,17 +265,27 @@ export default {
           this.submitting = false
         })
     },
-    prepareWave(file) {
-      const regionStart = Math.floor(this.duration / 2)
+    prepareWave({ url, blob }) {
+      const { demoArea } = this.song
+      const hasDemoArea = this.songId && demoArea
+
       const region = {
-        start: regionStart,
-        end: regionStart + REGION_DURATION,
         loop: true,
         drag: true,
         resize: true,
         color: 'rgba(0,0,0,0.35)'
       }
 
+      if (!hasDemoArea) {
+        const regionStart = Math.floor(this.duration / 2)
+        region.start = regionStart
+        region.end = regionStart + REGION_DURATION
+      } else {
+        region.start = demoArea.start
+        region.end = demoArea.start + demoArea.duration
+      }
+
+      document.getElementById('wavedemo').innerHTML = ''
       this.wavesurfer = WaveSurfer.create({
         container: '#wavedemo',
         waveColor: '#dee2e8',
@@ -312,7 +297,13 @@ export default {
         responsive: true,
         minPxPerSec: 1
       })
-      this.wavesurfer.loadBlob(file)
+      if (url) {
+        this.wavesurfer.load(`${serverUrl}/static/tracks/${url}`)
+      } else if (blob) {
+        this.wavesurfer.load(blob)
+      } else {
+        return
+      }
 
       this.wavesurfer.on('ready', () => {
         const regionKeys = Object.keys(this.wavesurfer.regions.list)
