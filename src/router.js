@@ -10,7 +10,7 @@ import AdminDashboard from '@/views/admin/AdminDashboard'
 import UserDashboard from '@/views/user/UserDashboard'
 import ManageSong from '@/views/admin/ManageSong'
 
-import ThankYou from '@/views/ThankYou'
+import PostOrder from '@/views/PostOrder'
 
 Vue.use(Router)
 
@@ -83,9 +83,9 @@ export default new Router({
       })
     },
     {
-      path: '/thankyou',
-      name: 'thankyou',
-      component: ThankYou
+      path: '/postorder',
+      name: 'postorder',
+      component: PostOrder
     }
   ]
 })
