@@ -11,7 +11,9 @@ const getStoredObj = () => {
 const persistUser = ({ token, user }, forceReload) => {
   if (!forceReload) {
     const storedAuthObj = getStoredObj()
+    const oldUser = { ...storedAuthObj.user }
     storedAuthObj.user = user
+    storedAuthObj.user.isAdmin = oldUser.isAdmin
     localStorage.setItem(STORAGE_KEY, JSON.stringify(storedAuthObj))
   } else {
     const authObj = JSON.stringify({ token, user })
