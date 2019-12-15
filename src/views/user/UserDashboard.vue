@@ -10,10 +10,10 @@
           b-form-input(v-model="user.email" required autocomplete="new-password")
         br
         b-input-group(prepend="Password")
-          b-form-input(v-model="user.password" required placeholder="(unchanged)" type="password" autocomplete="new-password")
+          b-form-input(v-model="user.password" placeholder="(unchanged)" type="password" autocomplete="new-password")
         br
         b-input-group(v-if="user.password" prepend="Confirm password")
-          b-form-input(v-model="user.confirmPassword" required type="password" autocomplete="new-password")
+          b-form-input(v-model="user.confirmPassword" type="password" autocomplete="new-password")
     br
     b-card
       .flex-row.space-between.align-center(slot="header")
@@ -160,6 +160,9 @@ export default {
 
       const reqObj = { email, password, confirmPassword }
       Api.updateUser(reqObj)
+        .then((result) => {
+          this.$store.dispatch('authentication/update', result)
+        })
         .catch((err) => {
           this.userSettingsError = err.msg
         })

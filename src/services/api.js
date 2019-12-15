@@ -265,7 +265,8 @@ export default {
       })
   },
   updateUser(userObj) {
-    return http.post('/accounts/update', userObj)
+    return getAuthHeaders()
+      .then(options => http.post('/accounts/update', userObj, options))
       .then(resp => resp.data)
       .catch((err) => {
         const { data } = err.response

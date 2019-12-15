@@ -14,7 +14,7 @@ export default {
 
       return auth.login(username, password)
         .then((userObj) => {
-          commit('loginSuccess', userObj)
+          commit('userPersistSuccess', userObj)
           return userObj
         })
         .catch((err) => {
@@ -26,6 +26,11 @@ export default {
     logout({ commit }) {
       auth.logout()
       commit('logout')
+    },
+    update({ commit }, userObj) {
+      auth.persistUser({ user: userObj })
+      commit('userPersistSuccess', userObj)
+      return userObj
     }
   },
   mutations: {
@@ -33,7 +38,7 @@ export default {
       state.status = { loggingIn: true }
       state.user = userObj
     },
-    loginSuccess(state, userObj) {
+    userPersistSuccess(state, userObj) {
       state.status = { loggedIn: true }
       state.user = userObj
     },
