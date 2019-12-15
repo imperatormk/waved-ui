@@ -300,7 +300,7 @@ export default {
       if (url) {
         this.wavesurfer.load(`${serverUrl}/static/tracks/${url}`)
       } else if (blob) {
-        this.wavesurfer.load(blob)
+        this.wavesurfer.loadBlob(blob)
       } else {
         return
       }
