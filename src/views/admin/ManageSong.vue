@@ -35,7 +35,9 @@
         br
         TrackUpload(
           @filesChanged="filesChanged"
-          :eventBus="getEventBus()")
+          :inProgress="submitting"
+          :eventBus="getEventBus()"
+        )
         br
         template(v-if="existingTracks.length")
           b-table.no-margin(
@@ -50,7 +52,12 @@
               span {{ getTrackFullTitle(data.item) }}
             template(v-slot:cell(actions)="data")
               .flex-row
-                b-button(@click="removeTrack(data.item.id)" size="sm" :variant="data.item.markedForDeletion ? 'success' : 'danger'")
+                b-button(
+                  @click="removeTrack(data.item.id)"
+                  :disabled="submitting"
+                  :variant="data.item.markedForDeletion ? 'success' : 'danger'"
+                  size="sm"
+                )
                   font-awesome-icon(:icon="!data.item.markedForDeletion ? 'trash-alt' : 'trash-restore-alt'" fixed-width)
           br
         .p5-left(v-if="hasDurationTrack && loaded")

@@ -139,7 +139,7 @@ export default {
       newsolo: this.onNewSolo,
       newseek: this.onNewSeek,
       tempochanged: this.onTempoChanged,
-      collectdata: this.onCollectData,
+      collectdata: this.onCollectData
     }
 
     this.subEvents()

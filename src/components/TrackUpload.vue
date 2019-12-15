@@ -1,5 +1,5 @@
 <template lang="pug">
-  .track-upload.font-black
+  .track-upload.font-black(:style="{'pointer-events': inProgress ? 'none' : 'auto'}")
     .flex-column.align-center
       label
         form(ref="fileform")
@@ -37,6 +37,7 @@ import { instruments } from '@/data'
 export default {
   props: {
     filesProp: Array,
+    inProgress: Boolean,
     eventBus: {
       type: Object,
       required: true
