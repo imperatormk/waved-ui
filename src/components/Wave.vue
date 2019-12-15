@@ -288,7 +288,9 @@ export default {
       this.$emit('newseek', value)
     },
     onReady() {
-      const setupSoundtouch = () => {
+      const setupSoundtouch = (bypass) => {
+        if (bypass) return // allow short-circuit
+
         const instance = new window.soundtouch.SoundTouch(this.wavesurfer.backend.ac.sampleRate)
         const source = {
           extract: (target, numFrames, position) => {
@@ -335,7 +337,7 @@ export default {
         }
       }
 
-      setupSoundtouch()
+      setupSoundtouch(true)
       setupWave()
 
       this.loading = false
