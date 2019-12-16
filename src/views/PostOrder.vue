@@ -2,27 +2,28 @@
   Layout(:title="pageTitle")
     b-card.p15(v-if="processing")
       h4(v-if="pageMessage") {{ pageMessage }}
-      .flex-col.p5(v-if="config")
-        .p5
-        h5 Settings
-        .p20-bot.p5-top
-          b-badge(pill variant="warning")
-            .fs14.p5 Tempo: {{ config.opts.tempo * 100 }}%
-        h5 Tracks
-        .flex-row.p5(v-for="track in config.tracks")
-          .p5-side {{ track.title || 'Instrument' }}
-          .p5-side
-            b-badge(pill variant="dark")
-              .fs14.p5 Tempo: {{ track.tempo * 100 }}%
-          .p5-side
-            b-badge(pill variant="secondary")
-              .fs14.p5 Panning: {{ track.panning * 100 }}%
-          .p5-side(v-if="!track.mute")
-            b-badge(pill variant="primary")
-              .fs14.p5 Volume: {{ track.volume * 100 }}%
-          .p5-side(v-if="track.mute")
-            b-badge(pill variant="danger")
-              .fs14.p5 Mute
+      template(v-if="isSuccess && config")
+        .flex-col.p5
+          .p5
+          h5 Settings
+          .p20-bot.p5-top
+            b-badge(pill variant="warning")
+              .fs14.p5 Tempo: {{ config.opts.tempo * 100 }}%
+          h5 Tracks
+          .flex-row.p5(v-for="track in config.tracks")
+            .p5-side {{ track.title || 'Instrument' }}
+            .p5-side
+              b-badge(pill variant="dark")
+                .fs14.p5 Tempo: {{ track.tempo * 100 }}%
+            .p5-side
+              b-badge(pill variant="secondary")
+                .fs14.p5 Panning: {{ track.panning * 100 }}%
+            .p5-side(v-if="!track.mute")
+              b-badge(pill variant="primary")
+                .fs14.p5 Volume: {{ track.volume * 100 }}%
+            .p5-side(v-if="track.mute")
+              b-badge(pill variant="danger")
+                .fs14.p5 Mute
         .p10
       h6 Don't forget you can always view all your creations in your&nbsp;
         router-link(:to="{name:'userDashboard'}" target="_blank") Dashboard
@@ -33,10 +34,12 @@ import Api from '@/services/api'
 import moment from 'moment'
 
 const statuses = [{
+  type: 'success',
   status: ['paid'],
   title: 'Your order has been received',
   message: 'Here is what you have brewed'
 }, {
+  type: 'failure',
   status: ['failed', 'canceled'],
   title: 'Something has gone wrong',
   message: 'We got a failure message — please retry the order and let us know if the issue persists'
@@ -51,6 +54,7 @@ export default {
 
         const statusObj = this.getOrderStatus(this.order)
         if (!statusObj) throw new Error('nonexistentStatus')
+        this.status = statusObj
 
         const { createdAt } = this.order
         const createdAtDate = moment(createdAt)
@@ -65,7 +69,8 @@ export default {
       })
   },
   data: () => ({
-    processing: null
+    processing: null,
+    status: null
   }),
   methods: {
     getOrderStatus(order) {
@@ -88,20 +93,22 @@ export default {
       return JSON.parse(config)
     },
     pageTitle() {
-      const { order } = this
-      if (!order) return null
+      const { status } = this
+      if (!status) return null
 
-      const statusObj = this.getOrderStatus(order)
-      if (!statusObj) return null
-      return statusObj.title
+      return status.title
     },
     pageMessage() {
-      const { order } = this
-      if (!order) return null
+      const { status } = this
+      if (!status) return null
 
-      const statusObj = this.getOrderStatus(order)
-      if (!statusObj) return null
-      return statusObj.message
+      return status.message
+    },
+    isSuccess() {
+      const { status } = this
+      if (!status) return false
+
+      return status.type === 'success'
     }
   }
 }
