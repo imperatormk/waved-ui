@@ -30,6 +30,7 @@
 
 <script>
 import Api from '@/services/api'
+import moment from 'moment'
 
 const statuses = [{
   status: ['paid'],
@@ -47,6 +48,17 @@ export default {
     Api.getProcessing(processingId, true)
       .then((processing) => {
         this.processing = processing
+
+        const statusObj = this.getOrderStatus(this.order)
+        if (!statusObj) throw new Error('nonexistentStatus')
+
+        const { createdAt } = this.order
+        const createdAtDate = moment(createdAt)
+        const nowDate = moment()
+
+        const duration = moment.duration(createdAtDate.diff(nowDate))
+        const hours = Math.abs(duration.asHours())
+        if (hours > 2) throw new Error('expiredPostOrder')
       })
       .catch(() => {
         this.$router.push({ name: 'home' })
@@ -55,6 +67,14 @@ export default {
   data: () => ({
     processing: null
   }),
+  methods: {
+    getOrderStatus(order) {
+      const { status } = order
+      const statusObj = statuses.find(item => item.status.includes(status))
+      if (!statusObj) return null
+      return { ...statusObj, status }
+    }
+  },
   computed: {
     order() {
       const { processing } = this
@@ -71,9 +91,7 @@ export default {
       const { order } = this
       if (!order) return null
 
-      const { status } = order
-      const statusObj = statuses.find(item => item.status.includes(status))
-
+      const statusObj = this.getOrderStatus(order)
       if (!statusObj) return null
       return statusObj.title
     },
@@ -81,9 +99,7 @@ export default {
       const { order } = this
       if (!order) return null
 
-      const { status } = order
-      const statusObj = statuses.find(item => item.status.includes(status))
-
+      const statusObj = this.getOrderStatus(order)
       if (!statusObj) return null
       return statusObj.message
     }
