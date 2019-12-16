@@ -17,7 +17,7 @@
     br
     b-card
       .flex-row.space-between.align-center(slot="header")
-        span Processings
+        span Creations
       .flex-col
         b-table(
           id="processing-table"
@@ -30,15 +30,20 @@
           hover
           small
         )
+          template(v-slot:cell(song.title)="data")
+            .flex-row
+              span {{ data.item.song.title }}
+              .p5-side(v-if="data.item.outputFilename")
+                b-badge(pill variant="success") Ready
           template(v-slot:cell(createdAt)="data")
             span {{ formatDate(data.item.createdAt) }}
           template(v-slot:cell(actions)="data")
-            b-button(@click="toggleDetails(data.item)" size="sm") {{ data.item._showDetails ? 'Hide' : 'Show' }} details
+            b-button(@click="toggleDetails(data.item)" size="sm") {{ data.item._showDetails ? 'Hide' : 'Details' }}
           template(slot="row-details" slot-scope="row")
             b-card
               .flex-row
                 .flex-col.m5(v-if="row.item.outputFilename")
-                  span Your track is ready
+                  span Your creation is ready
                   .p5
                   b-button(@click="downloadProcessing(row.item)") Download
                 .flex-col.m5(v-if="row.item.status === 'PENDING'")
@@ -46,7 +51,7 @@
                   .p5
                   b-button(@click="orderItem(row.item)") Order now
                 .flex-col.m5(v-else-if="row.item.status === 'PREPARING'")
-                  span Track is still processing, please check again soon.
+                  span Creation is still processing, please check again soon.
                 .flex-col.m5(v-else-if="row.item.status === 'BROKEN'")
                   span Something gone wrong, please contact admin or try again.
                 .flex-1
