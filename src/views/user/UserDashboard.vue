@@ -42,19 +42,20 @@
           template(slot="row-details" slot-scope="row")
             b-card
               .flex-row
-                .flex-col.m5(v-if="row.item.outputFilename")
-                  span Your creation is ready
-                  .p5
-                  b-button(@click="downloadProcessing(row.item)") Download
-                .flex-col.m5(v-if="row.item.status === 'PENDING'")
-                  span Please submit payment to proceed
-                  .p5
-                  b-button(@click="orderItem(row.item)") Order now
-                .flex-col.m5(v-else-if="row.item.status === 'PREPARING'")
-                  span Creation is still processing, please check again soon.
-                .flex-col.m5(v-else-if="row.item.status === 'BROKEN'")
-                  span Something gone wrong, please contact admin or try again.
-                .flex-1
+                ConfigView(:config="getProcessingConfig(row.item)")
+                .flex-row.align-center.justify-center.w100
+                  .flex-col.m5(v-if="row.item.outputFilename")
+                    span Your creation is ready
+                    .p5
+                    b-button(@click="downloadProcessing(row.item)") Download
+                  .flex-col.m5(v-if="row.item.status === 'PENDING'")
+                    span Please submit payment to proceed
+                    .p5
+                    b-button(@click="orderItem(row.item)") Order now
+                  .flex-col.m5(v-else-if="row.item.status === 'PREPARING'")
+                    span Creation is still processing, please check again soon.
+                  .flex-col.m5(v-else-if="row.item.status === 'BROKEN'")
+                    span Something gone wrong, please contact admin or try again.
           template(slot="empty")
             span Nothing to see here...
           template(slot="table-busy")
@@ -71,6 +72,7 @@
 
 <script>
 import Api from '@/services/api'
+import ConfigView from '@/components/ConfigView'
 // eslint-disable-next-line
 import { gotoUrl, formatDate } from '@/helpers'
 
@@ -172,10 +174,17 @@ export default {
           this.userSettingsError = err.msg
         })
     },
+    getProcessingConfig(processing) {
+      const { config } = processing
+      return JSON.parse(config)
+    },
     formatDate(date) {
       const format = 'DD.MM.YYYY HH:mm'
       return formatDate(date, format)
     }
+  },
+  components: {
+    ConfigView
   }
 }
 </script>
