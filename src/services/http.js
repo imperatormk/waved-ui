@@ -6,10 +6,12 @@ const http = axios.create({
 
 // 401 response interceptor
 http.interceptors.response.use(response => response, (error) => {
-  if (error.response.status === 401 && !window.location.href.includes('login')) {
-    document.location.href = '/login'
-  } else if (error.response.status === 403) {
-    document.location.href = '/'
+  if (error && error.response) {
+    if (error.response.status === 401 && !window.location.href.includes('login')) {
+      document.location.href = '/login'
+    } else if (error.response.status === 403) {
+      document.location.href = '/'
+    }
   }
   return Promise.reject(error)
 })
