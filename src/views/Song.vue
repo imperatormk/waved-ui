@@ -183,10 +183,11 @@ export default {
       if (this.prepared.length === this.tracks.length) this.onDataReady()
     },
     onDataReady() {
+      const { tempo, pitch } = this
       const data = {
         tracks: this.prepared,
         opts: {
-          tempo: this.tempo
+          tempo, pitch
         }
       }
       this.preparing = true
