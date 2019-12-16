@@ -270,7 +270,7 @@ export default {
       const volume = this.wavesurfer.getVolume()
       const mute = this.wavesurfer.getMute()
 
-      const { panning } = this
+      const { instrumentTitle, panning } = this
       const { url } = this.track
 
       const data = {
@@ -278,7 +278,8 @@ export default {
         volume,
         mute,
         panning,
-        url
+        url,
+        title: instrumentTitle
       }
       this.$emit('export', data)
     },

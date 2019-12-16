@@ -104,6 +104,18 @@ export default {
         return Promise.reject(data)
       })
   },
+  getProcessing(pcsId, fetchOrderStatus) {
+    const params = {}
+    if (fetchOrderStatus) params.order_status = true
+
+    return getAuthHeaders({ params })
+      .then(options => http.get(`/processings/${pcsId}`, options))
+      .then(resp => resp.data)
+      .catch((err) => {
+        const { data } = err.response
+        return Promise.reject(data)
+      })
+  },
   processTracks(songId, trackData) {
     return getAuthHeaders()
       .then(options => http.post(`/songs/${songId}/prepare`, trackData, options))
@@ -276,10 +288,10 @@ export default {
   downloadProcessing(pcsId, filename) {
     return getAuthHeaders({ responseType: 'blob' })
       .then(options => http.get(`/processings/${pcsId}/download`, options))
-      .then((response) => {
+      .then((resp) => {
         const fileNameHeader = 'x-suggested-filename'
-        const suggestedFileName = response.headers[fileNameHeader] || filename
-        saveAs(response.data, suggestedFileName)
+        const suggestedFileName = resp.headers[fileNameHeader] || filename
+        saveAs(resp.data, suggestedFileName)
       })
       .catch((err) => {
         const { data } = err.response
