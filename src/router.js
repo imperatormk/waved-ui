@@ -12,6 +12,8 @@ import ManageSong from '@/views/admin/ManageSong'
 
 import PostOrder from '@/views/PostOrder'
 
+import store from '@/store'
+
 Vue.use(Router)
 
 const routeParamToNumber = (params, key) => {
@@ -22,7 +24,7 @@ const routeParamToNumber = (params, key) => {
   return returnObj
 }
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -51,7 +53,10 @@ export default new Router({
     {
       path: '/register',
       name: 'register',
-      component: Register
+      component: Register,
+      meta: {
+        guest: true
+      }
     },
     {
       path: '/songs/:slug',
@@ -62,17 +67,26 @@ export default new Router({
     {
       path: '/admin',
       name: 'adminDashboard',
-      component: AdminDashboard
+      component: AdminDashboard,
+      meta: {
+        allowedFor: ['admin']
+      }
     },
     {
       path: '/user',
       name: 'userDashboard',
-      component: UserDashboard
+      component: UserDashboard,
+      meta: {
+        allowedFor: ['user', 'admin']
+      }
     },
     {
       path: '/admin/songs/add',
       name: 'addSong',
-      component: ManageSong
+      component: ManageSong,
+      meta: {
+        allowedFor: ['admin']
+      }
     },
     {
       path: '/admin/songs/edit/:songId',
@@ -80,7 +94,10 @@ export default new Router({
       component: ManageSong,
       props: route => ({
         ...routeParamToNumber(route.params, 'songId')
-      })
+      }),
+      meta: {
+        allowedFor: ['admin']
+      }
     },
     {
       path: '/postorder',
@@ -89,3 +106,20 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  const { user } = store.state.authentication
+  const isUser = !!user
+  const isAdmin = isUser && user.isAdmin
+
+  const { allowedFor, guest } = to.meta
+  if (guest && isUser) return next('/')
+  if (!allowedFor) return next()
+
+  if (isAdmin) return next()
+  if (isUser && allowedFor.includes('user')) next()
+
+  return next('/')
+})
+
+export default router
