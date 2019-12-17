@@ -66,7 +66,7 @@
           :total-rows="totalElements"
           :per-page="pagination.size"
           aria-controls="processing-table"
-          @change="fetchData"
+          @change="fetchDataDeferred"
         )
 </template>
 
@@ -113,6 +113,9 @@ export default {
     }
   },
   methods: {
+    fetchDataDeferred() {
+      this.$nextTick(this.fetchData)
+    },
     fetchData() {
       this.loaded = false
 

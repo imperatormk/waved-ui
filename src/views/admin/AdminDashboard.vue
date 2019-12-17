@@ -10,7 +10,7 @@
           :items="songs"
           :busy="!loaded"
           :per-page="pagination.size"
-          :current-page="pagination.page"
+          :current-page="1"
           :fields="songFields"
           show-empty
           hover
@@ -37,7 +37,7 @@
           :total-rows="totalElements"
           :per-page="pagination.size"
           aria-controls="song-table"
-          @change="fetchData"
+          @change="fetchDataDeferred"
         )
     .m10
     b-card
@@ -120,6 +120,9 @@ export default {
     loaded: false
   }),
   methods: {
+    fetchDataDeferred() {
+      this.$nextTick(this.fetchData)
+    },
     fetchData() {
       this.loaded = false
       this.newGenreVisible = false
