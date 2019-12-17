@@ -47,7 +47,7 @@
                   .flex-col.m5(v-if="row.item.outputFilename")
                     span Your creation is ready
                     .p5
-                    b-button(@click="downloadProcessing(row.item)") Download
+                    b-button(@click="downloadProcessing(row.item)" :disabled="row.item.downloadInProgress") {{ !row.item.downloadInProgress ? 'Download' : 'Please wait...' }}
                   .flex-col.m5(v-if="row.item.status === 'PENDING'")
                     span Please submit payment to proceed
                     .p5
@@ -134,7 +134,15 @@ export default {
     },
     downloadProcessing(processing) {
       const { id, outputFilename } = processing
+      const processingObj = this.processings.find(item => item.id === id)
+      processingObj.downloadInProgress = true
+      this.$forceUpdate() // suboptimal
+
       Api.downloadProcessing(id, outputFilename)
+        .finally(() => {
+          processingObj.downloadInProgress = false
+          this.$forceUpdate() // suboptimal
+        })
     },
     orderItem(processing) {
       const pcsId = processing.id
