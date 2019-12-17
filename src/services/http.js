@@ -1,4 +1,5 @@
 import axios from 'axios'
+import MessageBus from './message-bus'
 
 const http = axios.create({
   baseURL: '/api'
@@ -8,9 +9,9 @@ const http = axios.create({
 http.interceptors.response.use(response => response, (error) => {
   if (error && error.response) {
     if (error.response.status === 401 && !window.location.href.includes('login')) {
-      document.location.href = '/login'
+      MessageBus.$emit('httpError', 401)
     } else if (error.response.status === 403) {
-      document.location.href = '/'
+      MessageBus.$emit('httpError', 403)
     }
   }
   return Promise.reject(error)
