@@ -1,4 +1,4 @@
-import moment from 'moment'
+import format from 'date-fns/format'
 
 const gotoUrl = (url, newTab) => {
   const param = newTab ? '_blank' : ''
@@ -6,9 +6,9 @@ const gotoUrl = (url, newTab) => {
   win.focus()
 }
 
-const formatDate = (date, format) => {
-  if (!date || !format) return null
-  return moment(date).format(format)
+const formatDate = (date, dateFormat) => {
+  if (!date || !dateFormat) return null
+  return format(new Date(date), dateFormat, new Date())
 }
 
 const capitalizeLetter = (str) => {

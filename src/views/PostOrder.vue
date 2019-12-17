@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import moment from 'moment'
+import differenceInHours from 'date-fns/differenceInHours'
 
 import Api from '@/services/api'
 import ConfigView from '@/components/ConfigView'
@@ -39,11 +39,10 @@ export default {
         this.status = statusObj
 
         const { createdAt } = this.order
-        const createdAtDate = moment(createdAt)
-        const nowDate = moment()
+        const createdAtDate = new Date(createdAt)
+        const nowDate = new Date()
 
-        const duration = moment.duration(createdAtDate.diff(nowDate))
-        const hours = Math.abs(duration.asHours())
+        const hours = Math.abs(differenceInHours(createdAtDate, nowDate))
         if (hours > 2) throw new Error('expiredPostOrder')
       })
       .catch(() => {

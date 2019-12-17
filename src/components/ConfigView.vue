@@ -10,7 +10,7 @@
           b-badge(pill variant="info")
             .fs14.p5 Pitch: {{ pitch }}
     h5 Tracks
-    .flex-row.p5.align-center(v-for="track in config.tracks")
+    .flex-row.p5.align-center(v-for="track in config.tracks" style="width: min-content;")
       .p5-side.w50 {{ track.title || 'Instrument' }}
       .p5-side
         b-badge(pill variant="secondary")

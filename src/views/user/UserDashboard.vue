@@ -190,7 +190,7 @@ export default {
       return JSON.parse(config)
     },
     formatDate(date) {
-      const format = 'DD.MM.YYYY HH:mm'
+      const format = 'dd.MM.yyyy HH:mm'
       return formatDate(date, format)
     }
   },
