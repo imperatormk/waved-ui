@@ -2,6 +2,9 @@ import { saveAs } from 'file-saver'
 import http from './http'
 import auth from './auth'
 
+const fallbackServerUrl = 'https://studiodoblo.de:7000'
+const serverUrl = process.env.VUE_APP_SERVER_URL || fallbackServerUrl
+
 const getAuthHeaders = (opts) => {
   const options = opts || {}
   return Promise.resolve(auth.getJwt())
@@ -285,13 +288,19 @@ export default {
         return Promise.reject(data)
       })
   },
-  downloadProcessing(pcsId, filename) {
-    return getAuthHeaders({ responseType: 'blob' })
-      .then(options => http.get(`/processings/${pcsId}/download`, options))
-      .then((resp) => {
-        const fileNameHeader = 'x-suggested-filename'
-        const suggestedFileName = resp.headers[fileNameHeader] || filename
-        saveAs(resp.data, suggestedFileName)
+  downloadProcessing(pcsId, filename) { // make with axios in future
+    return getAuthHeaders()
+      .then((options) => {
+        const { headers } = options
+        return fetch(`${serverUrl}/api/processings/${pcsId}/download`, {
+          headers: new Headers(headers)
+        })
+          .then(response => response.blob())
+          .then((blob) => {
+            const fileNameHeader = 'x-suggested-filename'
+            const suggestedFileName = headers[fileNameHeader] || filename
+            saveAs(blob, suggestedFileName)
+          })
       })
       .catch((err) => {
         const { data } = err.response
