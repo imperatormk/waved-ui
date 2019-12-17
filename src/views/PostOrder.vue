@@ -6,7 +6,7 @@
         ConfigView(:config="config")
         .p10
       h6 Don't forget you can always view all your creations in your&nbsp;
-        router-link(:to="{name:'userDashboard'}" target="_blank") Dashboard
+        router-link(:to="{name:'userDashboard'}") Dashboard
 </template>
 
 <script>

@@ -2,7 +2,6 @@
   b-navbar(toggleable="lg" variant="light" sticky)
     b-navbar-brand(:to="{ name: 'home' }")
       img(v-if="logo" :src="logoSrc" class="d-inline-block align-top" alt="Logo" height="30")
-      span(v-else) Waved
     b-navbar-toggle(target="nav-collapse")
 
     b-collapse(id="nav-collapse" is-nav)

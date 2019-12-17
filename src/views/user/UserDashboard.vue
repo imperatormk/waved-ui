@@ -43,7 +43,7 @@
             b-card
               .flex-row
                 ConfigView(:config="getProcessingConfig(row.item)")
-                .flex-row.align-center.justify-center.w100
+                .flex-row.align-center.justify-center.w50
                   .flex-col.m5(v-if="row.item.outputFilename")
                     span Your creation is ready
                     .p5
