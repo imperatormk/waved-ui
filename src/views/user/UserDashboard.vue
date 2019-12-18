@@ -28,6 +28,7 @@
           :fields="fields"
           show-empty
           hover
+          responsive
           small
         )
           template(v-slot:cell(song.title)="data")

@@ -46,6 +46,7 @@
             current-page="1"
             :fields="[{ key: 'instrument', label: 'Instrument' }, { key: 'actions', label: 'Actions' }]"
             hover
+            responsive
             small
           )
             template(v-slot:cell(instrument)="data")

@@ -1,20 +1,21 @@
 <template lang="pug">
   Layout
-    .flex-row
-      SongList.w100(
-        feed="bestsellers"
-        :perPage="10"
-      )
-      .p10
-      SongList.w100(
-        feed="latest"
-        :perPage="10"
-      )
-      .p10
-      SongList.w100(
-        feed="archive"
-        :perPage="10"
-      )
+    b-row
+      b-col
+        SongList.w100.p10(
+          feed="bestsellezrs"
+          :perPage="10"
+        )
+      b-col
+        SongList.w100.p10(
+          feed="latest"
+          :perPage="10"
+        )
+      b-col
+        SongList.w100.p10(
+          feed="archive"
+          :perPage="10"
+        )
 </template>
 
 <script>

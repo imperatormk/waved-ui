@@ -14,6 +14,7 @@
           :fields="songFields"
           show-empty
           hover
+          responsive
           small
         )
           template(v-slot:cell(actions)="data")
@@ -54,6 +55,7 @@
           :fields="genreFields"
           show-empty
           hover
+          responsive
           small
         )
           template(v-slot:cell(actions)="data")
