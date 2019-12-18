@@ -8,7 +8,8 @@
           h5 {{ song.title }}
           span {{ song.artist }}
         .flex-row.align-end
-          span ${{ song.price }}
+          b-badge
+            .fs14 €{{ song.price.toFixed(2) }}
 </template>
 
 <script>

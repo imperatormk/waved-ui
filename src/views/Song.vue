@@ -20,7 +20,7 @@
                   div
                     b-button(@click.prevent="togglePlay") {{ !playing ? 'Play' : 'Pause' }}
                   .p5-left
-                    b-button(@click.prevent="collectData" :disabled="preparing") Purchase
+                    b-button(@click.prevent="collectData" :disabled="preparing") Purchase (€{{ song.price.toFixed(2) }})
         Wave(
           @ready="onWaveReady"
           @export="exportAcc"
