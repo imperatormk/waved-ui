@@ -67,7 +67,7 @@
           div Start: {{ formattedDemoArea.start }}
           .narrow-line Duration: {{ formattedDemoArea.duration }}
           br
-        b-button(type="submit" :disabled="submitting" variant="primary") Submit
+        b-button(type="submit" :disabled="submitting || !loaded || (songId && !waveLoaded)" variant="primary") Submit
 </template>
 
 <script>
@@ -120,7 +120,8 @@ export default {
     wavesurfer: null,
     submitErr: '',
     submitting: false,
-    loaded: false
+    loaded: false,
+    waveLoaded: false
   }),
   computed: {
     pageTitle() {
@@ -174,6 +175,8 @@ export default {
       }
 
       this.loaded = false
+      this.waveLoaded = false
+
       Api.getSong(songId, 0)
         .then((song) => {
           this.loaded = true
@@ -315,6 +318,7 @@ export default {
       this.wavesurfer.on('ready', () => {
         const regionKeys = Object.keys(this.wavesurfer.regions.list)
         this.wavesurfer.regions.list[regionKeys[0]].update({ resize: 'true', drag: 'true' })
+        this.waveLoaded = true
       })
 
       this.wavesurfer.on('region-updated', (e) => {
