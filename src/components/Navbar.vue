@@ -6,6 +6,7 @@
 
     b-collapse(id="nav-collapse" is-nav)
       b-navbar-nav
+        b-nav-item(:to="{ name: 'songs' }") Songs
         b-nav-item-dropdown
           template(slot="button-content") Genres
           b-dropdown-item(v-for="genre in genres"

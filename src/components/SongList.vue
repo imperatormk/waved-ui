@@ -1,5 +1,5 @@
 <template lang="pug">
-  Layout
+  .flex-col
     b-card-group
       b-card(:header="criteriaType" no-body)
         b-list-group
@@ -7,6 +7,14 @@
             SongItem(:song="song")
         .fs18.p15(v-if="!songs.length")
           span Nothing to see here...
+    template(v-if="totalElements > pagination.size && multipage")
+      .p10
+      b-pagination(
+        v-model="pagination.page"
+        :total-rows="totalElements"
+        :per-page="pagination.size"
+        @change="fetchDataDeferred"
+      )
 </template>
 
 <script>
@@ -17,9 +25,21 @@ import { instruments } from '@/data'
 export default {
   props: {
     instrument: String,
-    genresCriteria: String
+    genresCriteria: String,
+    feed: String,
+    perPage: {
+      type: Number,
+      default: 10
+    },
+    multipage: {
+      type: Boolean,
+      default: false
+    }
   },
   created() {
+    if (this.perPage) {
+      this.pagination.size = this.perPage
+    }
     this.getGenres()
       .then(() => {
         this.getCriteria()
@@ -29,10 +49,16 @@ export default {
   data: () => ({
     criteria: {},
     songs: [],
-    genres: []
+    genres: [],
+    totalElements: 0,
+    pagination: {
+      page: 1,
+      size: 10
+    },
   }),
   computed: {
     criteriaType() {
+      const { feed } = this
       const { instrument, genres } = this.criteria
       if (instrument) return `Instrument: ${instruments[instrument].title.toLowerCase()}`
       if (genres) {
@@ -43,10 +69,16 @@ export default {
           .trim()
         return `Genres: ${genresMapped}`
       }
-      return 'Latest songs'
+      if (feed === 'bestsellers') return 'Best Sellers'
+      if (feed === 'archive') return 'Archive'
+      if (feed === 'latest') return 'Latest songs'
+      return 'Song catalog'
     }
   },
   methods: {
+    fetchDataDeferred() {
+      this.$nextTick(this.getSongs)
+    },
     getGenres() {
       return Api.getGenres()
         .then((genres) => {
@@ -66,14 +98,19 @@ export default {
       this.criteria = criteria
     },
     getSongs() {
+      const { feed } = this
       const criteriaObj = {
         ...this.criteria,
-        unpublished: false
+        unpublished: false,
+        feed
       }
 
-      Api.getSongs({ size: 10, order: 'DESC' }, criteriaObj)
-        .then((songs) => {
-          this.songs = songs.content
+      const { page, size } = this.pagination
+
+      Api.getSongs({ page, size, order: 'DESC' }, criteriaObj)
+        .then((resp) => {
+          this.songs = resp.content
+          this.totalElements = resp.totalElements
         })
     }
   },

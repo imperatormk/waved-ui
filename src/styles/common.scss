@@ -285,3 +285,13 @@
 .space-nowrap {
   white-space: nowrap;
 }
+
+.page-link {
+  color: #c75a69 !important;
+}
+
+.page-item.active .page-link {
+  color: #fff !important;
+  background-color: #c75a69 !important;
+  border-color: #fff !important;
+}

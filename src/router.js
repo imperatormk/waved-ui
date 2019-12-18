@@ -4,8 +4,9 @@ import Router from 'vue-router'
 import Login from '@/views/Login'
 import Register from '@/views/Register'
 
+import Home from '@/views/Home'
 import Song from '@/views/Song'
-import Songs from '@/views/Songs'
+import SongList from '@/views/SongList'
 import AdminDashboard from '@/views/admin/AdminDashboard'
 import UserDashboard from '@/views/user/UserDashboard'
 import ManageSong from '@/views/admin/ManageSong'
@@ -31,18 +32,23 @@ const router = new Router({
     {
       path: '/',
       name: 'home',
-      component: Songs
+      component: Home
+    },
+    {
+      path: '/songs',
+      name: 'songs',
+      component: SongList
     },
     {
       path: '/instruments/:instrument',
       name: 'instruments',
-      component: Songs,
+      component: SongList,
       props: true
     },
     {
       path: '/genres/:genresCriteria',
       name: 'genres',
-      component: Songs,
+      component: SongList,
       props: true
     },
     {
