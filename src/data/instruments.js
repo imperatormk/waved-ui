@@ -10,5 +10,5 @@ export default {
   custom: {
     title: 'Custom',
     icon: 'broom'
-  },
+  }
 }

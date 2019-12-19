@@ -13,8 +13,9 @@
 </template>
 
 <script>
-const fallbackServerUrl = 'https://studiodoblo.de:7000'
-const serverUrl = process.env.VUE_APP_SERVER_URL || fallbackServerUrl
+import { getServerUrl } from '@/services/system'
+
+const serverUrl = getServerUrl()
 
 export default {
   props: {

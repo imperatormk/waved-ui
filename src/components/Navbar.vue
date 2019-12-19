@@ -34,9 +34,9 @@
 <script>
 import Api from '@/services/api'
 import { instruments } from '@/data'
+import { getServerUrl } from '@/services/system'
 
-const fallbackServerUrl = 'https://studiodoblo.de:7000'
-const serverUrl = process.env.VUE_APP_SERVER_URL || fallbackServerUrl
+const serverUrl = getServerUrl()
 
 export default {
   props: {

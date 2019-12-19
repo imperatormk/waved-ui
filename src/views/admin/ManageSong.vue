@@ -80,9 +80,9 @@ import Api from '@/services/api'
 
 // eslint-disable-next-line
 import { capitalizeLetter, getFileMeta, pad2 } from '@/helpers'
+import { getServerUrl } from '@/services/system'
 
-const fallbackServerUrl = 'https://studiodoblo.de:7000'
-const serverUrl = process.env.VUE_APP_SERVER_URL || fallbackServerUrl
+const serverUrl = getServerUrl()
 
 const REGION_DURATION = 30
 

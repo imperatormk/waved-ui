@@ -3,5 +3,5 @@ import instruments from '@/data/instruments'
 
 export {
   colors,
-  instruments,
+  instruments
 }

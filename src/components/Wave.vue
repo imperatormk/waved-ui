@@ -31,9 +31,9 @@
 import WaveSurfer from 'wavesurfer.js'
 import RegionPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min'
 import { instruments, colors } from '@/data'
+import { getServerUrl } from '@/services/system'
 
-const fallbackServerUrl = 'https://studiodoblo.de:7000'
-const serverUrl = process.env.VUE_APP_SERVER_URL || fallbackServerUrl
+const serverUrl = getServerUrl()
 
 const changePbColor = (id, color) => {
   const el = document.querySelector(`#${id} > .progress-bar`)

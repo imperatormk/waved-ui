@@ -1,9 +1,9 @@
 import { saveAs } from 'file-saver'
 import http from './http'
 import auth from './auth'
+import { getServerUrl } from './system'
 
-const fallbackServerUrl = 'https://studiodoblo.de:7000'
-const serverUrl = process.env.VUE_APP_SERVER_URL || fallbackServerUrl
+const serverUrl = getServerUrl()
 
 const getAuthHeaders = (opts) => {
   const options = opts || {}
@@ -62,6 +62,16 @@ const forgeTrackPromises = (songId, tracks, onProgress) => {
       body: formData,
       id: metadata.id
     }, onProgress)
+  })
+}
+
+const forgeThumbnailPromise = (songId, thumbnail) => {
+  const formData = new FormData()
+  formData.append('thumbnail', thumbnail)
+
+  return promisedXhr(`/api/songs/${songId}/thumbnail`, {
+    method: 'PUT',
+    body: formData
   })
 }
 
@@ -168,16 +178,7 @@ export default {
         const songId = songResult.id
 
         const trackPromises = forgeTrackPromises(songId, tracks, onProgress)
-
-        const thumbnailPromise = (() => {
-          const formData = new FormData()
-          formData.append('thumbnail', thumbnail)
-
-          return promisedXhr(`/api/songs/${songId}/thumbnail`, {
-            method: 'PUT',
-            body: formData
-          })
-        })()
+        const thumbnailPromise = forgeThumbnailPromise(songId, thumbnail)
 
         return Promise.all([...trackPromises, thumbnailPromise])
           .then(trackResults => ({
@@ -210,15 +211,7 @@ export default {
         const promises = []
 
         if (thumbnail) {
-          const thumbnailPromise = (() => {
-            const formData = new FormData()
-            formData.append('thumbnail', thumbnail)
-
-            return promisedXhr(`/api/songs/${id}/thumbnail`, {
-              method: 'PUT',
-              body: formData
-            })
-          })()
+          const thumbnailPromise = forgeThumbnailPromise(id, thumbnail)
           promises.push(thumbnailPromise)
         }
 
