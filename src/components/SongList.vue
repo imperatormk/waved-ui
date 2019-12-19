@@ -1,6 +1,6 @@
 <template lang="pug">
   .flex-col
-    b-card-group
+    b-card-group(v-if="!nonempty || songs.length > 0")
       b-card(:header="criteriaType" no-body)
         b-list-group
           b-list-group-item(v-for="song in songs" :key="songs.id")
@@ -34,7 +34,11 @@ export default {
     multipage: {
       type: Boolean,
       default: false
-    }
+    },
+    nonempty: {
+      type: Boolean,
+      default: false
+    },
   },
   created() {
     if (this.perPage) {

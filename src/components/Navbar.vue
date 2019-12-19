@@ -26,7 +26,7 @@
           b-dropdown-item(v-if="loggedUser.isAdmin" :to="{ name: 'adminDashboard' }") Admin dashboard
           b-dropdown-item(:to="{ name: 'userDashboard' }") Dashboard
           b-dropdown-item(@click="logout") Log out
-        .flex-row(v-else)
+        template(v-else)
           b-nav-item(:to="{ name: 'login' }") Log in
           b-nav-item(:to="{ name: 'register' }") Register
 </template>

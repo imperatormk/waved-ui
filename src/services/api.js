@@ -121,7 +121,7 @@ export default {
   },
   processTracks(songId, trackData) {
     return getAuthHeaders()
-      .then(options => http.post(`/songs/${songId}/prepare`, trackData, options))
+      .then(options => http.put(`/songs/${songId}/prepare`, trackData, options))
       .then(resp => resp.data)
       .catch((err) => {
         const { data } = err.response
@@ -138,8 +138,11 @@ export default {
       })
   },
   updateGenre(genre) {
+    const genreObj = { ...genre }
+    const { id } = genre
+    delete genreObj.id
     return getAuthHeaders()
-      .then(options => http.put('/genres', genre, options))
+      .then(options => http.put(`/genres/${id}`, genreObj, options))
       .then(resp => resp.data)
       .catch((err) => {
         const { data } = err.response
@@ -171,7 +174,7 @@ export default {
           formData.append('thumbnail', thumbnail)
 
           return promisedXhr(`/api/songs/${songId}/thumbnail`, {
-            method: 'POST',
+            method: 'PUT',
             body: formData
           })
         })()
@@ -193,14 +196,15 @@ export default {
     } = obj
     const { id } = song
     delete song.thumbnail
+    delete song.id
 
-    if (!song.id) {
+    if (!id) {
       const err = { msg: 'invalidSong' }
       return Promise.reject(err)
     }
 
     return getAuthHeaders()
-      .then(options => http.put('/songs', song, options))
+      .then(options => http.put(`/songs/${id}`, song, options))
       .then(resp => resp.data)
       .then((songResult) => {
         const promises = []
@@ -211,7 +215,7 @@ export default {
             formData.append('thumbnail', thumbnail)
 
             return promisedXhr(`/api/songs/${id}/thumbnail`, {
-              method: 'POST',
+              method: 'PUT',
               body: formData
             })
           })()
@@ -235,12 +239,24 @@ export default {
   },
   publishSong(songId) {
     const song = {
-      id: songId,
       published: true
     }
 
     return getAuthHeaders()
-      .then(options => http.put('/songs', song, options))
+      .then(options => http.put(`/songs/${songId}`, song, options))
+      .then(resp => resp.data)
+      .catch((err) => {
+        const { data } = err.response
+        return Promise.reject(data)
+      })
+  },
+  toggleSongArchive(songId, archived) {
+    const song = {
+      archived
+    }
+
+    return getAuthHeaders()
+      .then(options => http.put(`/songs/${songId}`, song, options))
       .then(resp => resp.data)
       .catch((err) => {
         const { data } = err.response

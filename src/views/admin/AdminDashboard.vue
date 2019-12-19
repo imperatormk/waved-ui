@@ -24,6 +24,9 @@
               .p5
               b-button(@click="deleteSong(data.item.id)" size="sm" variant="danger")
                 font-awesome-icon(:icon="songToDelete !== data.item.id ? 'trash-alt' : 'check'" fixed-width)
+              .p5
+              b-button(@click="toggleSongArchive(data.item.id, data.item.archived)" size="sm" variant="info")
+                font-awesome-icon(:icon="data.item.archived ? 'box-open' : 'box'" fixed-width)
               template(v-if="!data.item.published")
                 .p5
                 b-button(@click="publishSong(data.item.id)" size="sm" variant="primary")
@@ -129,7 +132,10 @@ export default {
       this.loaded = false
       this.newGenreVisible = false
 
-      const criteriaObj = { unpublished: true }
+      const criteriaObj = {
+        unpublished: true,
+        archived: 'all'
+      }
       const songsPromise = Api.getSongs(this.pagination, criteriaObj)
         .then((resp) => {
           this.songs = resp.content
@@ -159,6 +165,10 @@ export default {
     },
     publishSong(songId) {
       Api.publishSong(songId)
+        .then(() => this.fetchData())
+    },
+    toggleSongArchive(songId, archived) {
+      Api.toggleSongArchive(songId, !archived)
         .then(() => this.fetchData())
     },
     deleteSong(songId) {
