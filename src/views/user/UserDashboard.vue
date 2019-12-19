@@ -36,15 +36,14 @@
               span {{ data.item.song.title }}
               .p5-side(v-if="data.item.outputFilename")
                 b-badge(pill variant="success") Ready
-          template(v-slot:cell(createdAt)="data")
-            span {{ formatDate(data.item.createdAt) }}
           template(v-slot:cell(actions)="data")
             b-button(@click="toggleDetails(data.item)" size="sm") {{ data.item._showDetails ? 'Hide' : 'Details' }}
           template(slot="row-details" slot-scope="row")
             b-card
-              .flex-row
-                ConfigView(:config="getProcessingConfig(row.item)")
-                .flex-row.align-center.justify-center.w50
+              .flex-row.flex-wrap
+                .flex-1
+                  ConfigView(:config="getProcessingConfig(row.item)")
+                .flex-1.flex-row.align-center.justify-center
                   .flex-col.m5(v-if="row.item.outputFilename")
                     span Your creation is ready
                     .p5
@@ -57,6 +56,8 @@
                     span Creation is still processing, please check again soon.
                   .flex-col.m5(v-else-if="row.item.status === 'BROKEN'")
                     span Something gone wrong, please contact admin or try again.
+              .flex-row.p10-top.p5-left
+                span (created at {{ formatDate(row.item.createdAt) }})
           template(slot="empty")
             span Nothing to see here...
           template(slot="table-busy")
@@ -94,10 +95,6 @@ export default {
     }, {
       key: 'song.artist',
       label: 'Artist'
-    },
-    {
-      key: 'createdAt',
-      label: 'Date'
     },
     {
       key: 'actions',

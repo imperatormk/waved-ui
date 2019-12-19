@@ -74,6 +74,10 @@
   align-items: center;
   justify-content: center;
 }
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
 // .m5, .m10...
 @for $i from 1 through 40 {
   .m#{$i * 5} {
@@ -294,8 +298,4 @@
   color: #fff !important;
   background-color: #c75a69 !important;
   border-color: #fff !important;
-}
-
-.width-max {
-  width: max-content;
 }

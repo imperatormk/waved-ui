@@ -3,7 +3,10 @@
     b-card.p15(v-if="processing")
       h4(v-if="pageMessage") {{ pageMessage }}
       template(v-if="isSuccess && config")
-        ConfigView(:config="config")
+        .flex-row.flex-wrap
+          .flex-1
+            ConfigView(:config="config")
+          .flex-2
         .p10
       h6 Don't forget you can always view all your creations in your&nbsp;
         router-link(:to="{name:'userDashboard'}") Dashboard
