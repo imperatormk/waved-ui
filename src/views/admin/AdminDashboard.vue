@@ -138,8 +138,9 @@ export default {
       }
       const songsPromise = Api.getSongs(this.pagination, criteriaObj)
         .then((resp) => {
-          this.songs = resp.content
-          this.totalElements = resp.totalElements
+          const { content, totalElements } = resp
+          this.songs = content
+          this.totalElements = totalElements
         })
 
       const genresPromise = Api.getGenres()

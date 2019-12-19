@@ -125,11 +125,12 @@ export default {
 
       Api.getProcessings(params)
         .then((resp) => {
-          this.processings = resp.content.map(processing => ({
+          const { content, totalElements } = resp
+          this.processings = content.map(processing => ({
             ...processing,
             _showDetails: false
           }))
-          this.totalElements = resp.totalElements
+          this.totalElements = totalElements
           this.loaded = true
         })
     },

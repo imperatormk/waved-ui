@@ -1,6 +1,6 @@
 <template lang="pug">
   .flex-col
-    b-card-group(v-if="!nonempty || songs.length > 0")
+    b-card-group
       b-card(:header="criteriaType" no-body)
         b-list-group
           b-list-group-item(v-for="song in songs" :key="songs.id")
@@ -34,11 +34,7 @@ export default {
     multipage: {
       type: Boolean,
       default: false
-    },
-    nonempty: {
-      type: Boolean,
-      default: false
-    },
+    }
   },
   created() {
     if (this.perPage) {
@@ -113,8 +109,10 @@ export default {
 
       Api.getSongs({ page, size, order: 'DESC' }, criteriaObj)
         .then((resp) => {
-          this.songs = resp.content
-          this.totalElements = resp.totalElements
+          const { content, totalElements } = resp
+          this.songs = content
+          this.totalElements = totalElements
+          this.$emit('songsLoaded', totalElements)
         })
     }
   },
