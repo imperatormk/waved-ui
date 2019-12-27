@@ -3,13 +3,13 @@
     .p5(v-if="loading")
       b-progress(:id="'pb' + track.id" :value="1" :max="1" animated height="0.7rem")
     .flex-row.align-center.font-black
-      .w13.flex-row.align-center.space-between.p10-side
+      .w15.flex-row.align-center.space-between.p10-side
         span.narrow-line {{ instrumentTitle }}
         font-awesome-icon.fs20(:icon="instrumentIcon" fixed-width)
-      .w50.flex-col(:style="{'background-color':color}")
+      .w55.flex-col(:style="{'background-color':color}")
         .w100(ref="wave" @ready="onReady" :id="'wave' + track.id")
       .p10-side
-      .w37.flex-row.align-center.space-between
+      .w30.flex-row.align-center.space-between
         .flex-row.align-center
           .flex-col.align-center
             .w100.flex-row.space-between.align-center
@@ -20,13 +20,11 @@
               b-form-input(type="range" @input="panningChanged" min="-100" max="100" step="20" :value="panning * 100")
           .p10-left.p5-right
           .flex-row.align-center
-            .w75.flex-row.align-center.p10-right
-              VolumeSlider(:value="volume" @input="volumeChanged" :color="color" :mute="mute")
-            .w25.flex-row.justify-end.align-center
-              span {{ volume }}%
-        .p10-left.p5-right.flex-row.align-end.justify-center
-          b-button(@click="toggleMute" :style="{'background-color': !mute ? color : '#6c757d'}")
-            font-awesome-icon(:icon="mute ? 'volume-mute' : 'volume-up'" fixed-width)
+            .w100.flex-row.align-center.p10-right
+              VolumeSlider(:value="volume" @input="volumeChanged" :color="color" :mute="mute" show-label)
+        .p5-right.flex-row.align-end.justify-center
+          b-button(@click="toggleMute" :pressed="false" :style="{'background-color': !mute ? color : '#6c757d', 'border-color': 'transparent'}")
+            font-awesome-icon(:icon="mute ? 'volume-mute' : 'volume-up'" :pressed="false" fixed-width)
           .p5-left
           b-button(@click="newSolo" :style="{'background-color': solo ? color : '#6c757d'}") S
 </template>

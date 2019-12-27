@@ -7,6 +7,7 @@
     )
       .volumebkg
       .volume(ref="volume")
+      .volumeLabel.fs14(v-if="showLabel") {{ value }}%
 </template>
 
 <script>
@@ -20,7 +21,8 @@ export default {
       type: String,
       default: '#007bff'
     },
-    mute: Boolean
+    mute: Boolean,
+    showLabel: Boolean
   },
   mounted() {
     this.updateVolume(null, this.value)
@@ -123,5 +125,12 @@ export default {
   z-index: 100;
   width: 100px;
   cursor: pointer;
+}
+
+.volumeLabel {
+  position: absolute;
+  z-index: 1;
+  bottom: 0;
+  right: 3px;
 }
 </style>
