@@ -4,6 +4,7 @@
       @mousedown="onMousedown"
       @mouseup="onMouseup"
       @mousemove="onMousemove"
+      @mouseleave="dragging = false"
     )
       .volumebkg
       .volume(ref="volume")
