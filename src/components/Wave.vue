@@ -3,33 +3,40 @@
     .p5(v-if="loading")
       b-progress(:id="'pb' + track.id" :value="1" :max="1" animated height="0.7rem")
     .flex-row.align-center.font-black
-      .w18.flex-row.align-center.space-between.p10-side
+      .w13.flex-row.align-center.space-between.p10-side
         span.narrow-line {{ instrumentTitle }}
         font-awesome-icon.fs20(:icon="instrumentIcon" fixed-width)
-      .w57.flex-col(:style="{'background-color':color}")
+      .w50.flex-col(:style="{'background-color':color}")
         .w100(ref="wave" @ready="onReady" :id="'wave' + track.id")
       .p10-side
-      .w25.flex-row.align-center.space-between
-        .flex-col.justify-center
-          .flex-row.align-center
-            .w70.flex-row.align-center
+      .w37.flex-row.align-center.space-between
+        .flex-row.align-center
+          .flex-col.align-center
+            .w100.flex-row.space-between.align-center
+              span L
+              span C
+              span R
+            .flex-row.align-center
               b-form-input(type="range" @input="panningChanged" min="-100" max="100" step="20" :value="panning * 100")
-            .w30.flex-row.justify-end.align-center
-              span {{ panningDirection }} {{ Math.abs(panning).toFixed(1) }}
+          .p10-left.p5-right
           .flex-row.align-center
-            .w70.flex-row.align-center
-              b-form-input(type="range" @input="volumeChanged" min="0" max="100" value="100")
-            .w30.flex-row.justify-end.align-center
+            .w75.flex-row.align-center.p10-right
+              VolumeSlider(:value="volume" @input="volumeChanged" :color="color" :mute="mute")
+            .w25.flex-row.justify-end.align-center
               span {{ volume }}%
-        .p20-left.p5-right.flex-row.align-end.justify-center
-          b-button(@click="toggleMute" :variant="mute ? 'warning' : null") M
+        .p10-left.p5-right.flex-row.align-end.justify-center
+          b-button(@click="toggleMute" :style="{'background-color': !mute ? color : '#6c757d'}")
+            font-awesome-icon(:icon="mute ? 'volume-mute' : 'volume-up'" fixed-width)
           .p5-left
-          b-button(@click="newSolo" :variant="solo ? 'danger' : null") S
+          b-button(@click="newSolo" :style="{'background-color': solo ? color : '#6c757d'}") S
 </template>
 
 <script>
 import WaveSurfer from 'wavesurfer.js'
 import RegionPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min'
+
+import VolumeSlider from '@/components/VolumeSlider'
+
 import { instruments, colors } from '@/data'
 import { getServerUrl } from '@/services/system'
 
@@ -222,6 +229,7 @@ export default {
       const newValue = e / 100
       this.wavesurfer.setVolume(newValue)
       this.volume = e
+      this.mute = this.volume === 0
     },
     panningChanged(e) {
       const value = Math.sin(e * (Math.PI / 180))
@@ -355,6 +363,9 @@ export default {
         this.wavesurfer.on(event, this.waveEvents[event])
       })
     }
+  },
+  components: {
+    VolumeSlider
   }
 }
 </script>

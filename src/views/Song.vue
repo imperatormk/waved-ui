@@ -13,7 +13,7 @@
               .flex-row.align-center
                 span.space-nowrap {{ getTempoLabel }}
                 .p5-side
-                b-form-input(type="range" @change="tempoChanged" min="10" max="200" step="10" :value="tempo * 100")
+                b-form-input(type="range" @input="tempoChanged" min="10" max="200" step="10" :value="tempo * 100")
               .p10-side
               div(v-if="allReady")
                 .flex-row.align-center
