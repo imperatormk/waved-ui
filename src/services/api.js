@@ -58,7 +58,7 @@ const forgeTrackPromises = (songId, tracks, onProgress) => {
     formData.append('metadata', JSON.stringify(metadata))
 
     return promisedXhr(`/api/songs/${songId}/tracks`, {
-      method: 'POST',
+      method: 'PUT',
       body: formData,
       id: metadata.id
     }, onProgress)
