@@ -186,7 +186,7 @@ export default {
       }
       bpmAddedData.tempo.bpm = this.bpm
 
-      this.prepared.push(data)
+      this.prepared.push(bpmAddedData)
       if (this.prepared.length === this.tracks.length) this.onDataReady()
     },
     onDataReady() {
