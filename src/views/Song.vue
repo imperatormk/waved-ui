@@ -181,20 +181,19 @@ export default {
       this.$emit('collectdata')
     },
     exportAcc(data) {
-      const bpmAddedData = {
-        ...data
-      }
-      bpmAddedData.tempo.bpm = this.bpm
-
-      this.prepared.push(bpmAddedData)
+      this.prepared.push(data)
       if (this.prepared.length === this.tracks.length) this.onDataReady()
     },
     onDataReady() {
-      const { tempo, pitch } = this
+      const { tempo, pitch, bpm } = this
       const data = {
         tracks: this.prepared,
         opts: {
-          tempo, pitch
+          tempo: {
+            percentage: tempo,
+            bpm
+          },
+          pitch
         }
       }
       this.preparing = true
