@@ -8,7 +8,7 @@
             ConfigView(:config="config")
           .flex-2
         .p10
-      h6 Don't forget you can always view all your creations in your&nbsp;
+      h6.p5-top Don't forget you can always view all your creations in your&nbsp;
         router-link(:to="{name:'userDashboard'}") Dashboard
 </template>
 

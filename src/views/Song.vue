@@ -13,7 +13,7 @@
               .flex-row.align-center
                 span.space-nowrap {{ bpm }} BPM
                 .p5-side
-                b-form-input(type="range" @input="tempoChanged" :min="Number(song.bpm) - 20" :max="Number(song.bpm) + 20" :step="2" :value="bpm")
+                b-form-input(type="range" @input="tempoChanged" :min="song.bpm - 20" :max="song.bpm + 20" :step="2" :value="bpm")
               .p10-side
               div(v-if="allReady")
                 .flex-row.align-center

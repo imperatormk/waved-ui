@@ -30,8 +30,11 @@
                 span.upload-caption Upload
               b-img.song-thumbnail(v-if="!thumbnail" :src="thumbnailUrl")
         br
-        b-input-group(prepend="Price ($)")
+        b-input-group(prepend="Price (€)")
           b-form-input(v-model.number="song.price" type="number" min="0.01" step="0.01" required)
+        br
+        b-input-group(prepend="Tempo (BPM)")
+          b-form-input(v-model.number="song.bpm" type="number" min="40" max="300" required)
         br
         TrackUpload(
           @filesChanged="filesChanged"
@@ -171,6 +174,7 @@ export default {
     getSong() {
       const { songId } = this
       if (!songId) {
+        this.song.bpm = 120
         this.loaded = true
         return
       }
@@ -182,10 +186,10 @@ export default {
         .then((song) => {
           this.loaded = true
           const {
-            id, title, artist, thumbnail, price, tracks, duration, demoArea
+            id, title, artist, thumbnail, price, demoArea, bpm, tracks, duration
           } = song
           const songObj = {
-            id, title, artist, thumbnail, price, demoArea
+            id, title, artist, thumbnail, price, demoArea, bpm
           }
           songObj.genres = song.genres.map(item => item.id)
           this.song = songObj
