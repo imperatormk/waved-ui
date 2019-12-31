@@ -11,9 +11,9 @@
                 b-form-select(v-model="pitch" :options="pitches")
               .p10-side
               .flex-row.align-center
-                span.space-nowrap {{ getTempoLabel }}
+                span.space-nowrap {{ bpm }} BPM
                 .p5-side
-                b-form-input(type="range" @input="tempoChanged" min="10" max="200" step="10" :value="tempo * 100")
+                b-form-input(type="range" @input="tempoChanged" :min="Number(song.bpm) - 20" :max="Number(song.bpm) + 20" :step="2" :value="bpm")
               .p10-side
               div(v-if="allReady")
                 .flex-row.align-center
@@ -76,6 +76,7 @@ export default {
     regions: [],
     pitch: 0,
     tempo: 1,
+    bpm: 120,
     prepared: [],
     readyCount: 0,
     pitches: [
@@ -111,10 +112,6 @@ export default {
         .join(', ')
         .trim()
       return genresMapped
-    },
-    getTempoLabel() {
-      if (this.tempo === 1) return 'Tempo'
-      return `Tempo (${Math.round(this.tempo * 100)}%)`
     }
   },
   methods: {
@@ -155,6 +152,7 @@ export default {
         .then((song) => {
           this.song = song
           this.tracks = song.tracks
+          this.bpm = song.bpm
         })
     },
     togglePlay(e) {
@@ -169,8 +167,12 @@ export default {
     soloed(idx) {
       this.$emit('newsolo', idx)
     },
-    tempoChanged(e) {
-      const value = e / 100
+    tempoChanged(inpBpm) {
+      const orgBpm = this.song.bpm
+      const newBpm = Number(inpBpm)
+      const value = newBpm / orgBpm
+
+      this.bpm = newBpm
       this.tempo = value
       this.$emit('tempochanged', value)
     },
@@ -179,6 +181,11 @@ export default {
       this.$emit('collectdata')
     },
     exportAcc(data) {
+      const bpmAddedData = {
+        ...data
+      }
+      bpmAddedData.tempo.bpm = this.bpm
+
       this.prepared.push(data)
       if (this.prepared.length === this.tracks.length) this.onDataReady()
     },

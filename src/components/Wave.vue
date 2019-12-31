@@ -272,7 +272,7 @@ export default {
       if (node) node.disconnect()
     },
     onCollectData() {
-      const tempo = this.wavesurfer.getPlaybackRate()
+      const tempoPerc = this.wavesurfer.getPlaybackRate()
       const volume = this.wavesurfer.getVolume()
       const mute = this.wavesurfer.getMute()
 
@@ -280,7 +280,9 @@ export default {
       const { url } = this.track
 
       const data = {
-        tempo,
+        tempo: {
+          percentage: tempoPerc
+        },
         volume,
         mute,
         panning,

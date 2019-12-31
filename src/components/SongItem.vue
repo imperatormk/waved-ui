@@ -4,9 +4,11 @@
       .flex-row.align-center.p10-right(v-if="thumbnailUrl")
         b-img.song-thumbnail(:src="thumbnailUrl")
       .flex-row.space-between.w100
-        .flex-col
-          h5 {{ song.title }}
-          span {{ song.artist }}
+        .flex-col.space-between
+          .flex-col
+            h5 {{ song.title }}
+            span {{ song.artist }}
+          span(style="color:#7f7f7f") {{ song.bpm }} BPM
         .flex-row.align-end
           b-badge
             .fs14 €{{ song.price.toFixed(2) }}

@@ -5,7 +5,7 @@
       .flex-row
         .p5-side
           b-badge(pill variant="warning")
-            .fs14.p5 Tempo: {{ config.opts.tempo * 100 }}%
+            .fs14.p5 Tempo: {{ config.opts.tempo.bpm * 100 }} BPM
         .p5-side(v-if="config.opts.pitch")
           b-badge(pill variant="info")
             .fs14.p5 Pitch: {{ pitch }}
