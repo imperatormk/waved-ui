@@ -92,6 +92,9 @@ export default {
   }),
   watch: {
     pitch() {
+      if (this.playing) {
+        this.togglePlay()
+      }
       this.fetchData()
     }
   },
