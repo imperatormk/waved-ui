@@ -5,7 +5,7 @@
     b-navbar-toggle(target="nav-collapse")
 
     b-collapse(id="nav-collapse" is-nav)
-      b-navbar-nav
+      b-navbar-nav.flex-row.align-center
         b-nav-item(:to="{ name: 'songs' }") Songs
         b-nav-item-dropdown
           template(slot="button-content") Genres
@@ -20,6 +20,13 @@
             :value="instrument"
             v-if="instrument !== 'custom'"
             @click="gotoInstrument(instrument)") {{ instruments[instrument].title }}
+        b-nav-item.p25-left
+          b-form(@submit="onSearch")
+            b-input-group
+              b-form-input(v-model.trim="searchTerm" type="text" style="width:300px;" placeholder="Title, artist...")
+              b-input-group-append(v-if="searchQuery" @click="clearSearch" style="border:1px solid #ced4da;border-top-right-radius:0.25rem;border-bottom-right-radius:0.25rem;")
+                .flex-row.align-center.p5-side
+                  font-awesome-icon(icon="times" fixed-width)
       b-navbar-nav.ml-auto
         b-nav-item-dropdown(v-if="loggedIn" right)
           template(slot="button-content") {{ loggedUser.username }}
@@ -42,13 +49,15 @@ export default {
   props: {
     logo: Object
   },
+  created() {
+    const searchTerm = this.searchQuery
+    if (searchTerm) this.searchTerm = searchTerm
+  },
   data: () => ({
     instruments,
-    genres: []
+    genres: [],
+    searchTerm: ''
   }),
-  created() {
-    this.getGenres()
-  },
   computed: {
     loggedIn() {
       return this.$store.state.authentication.status.loggedIn
@@ -59,6 +68,9 @@ export default {
     logoSrc() {
       if (!this.logo) return null
       return `${serverUrl}/static/system/${this.logo.value}`
+    },
+    searchQuery() {
+      return this.$route.query.q
     }
   },
   methods: {
@@ -73,6 +85,21 @@ export default {
     },
     gotoInstrument(instrument) {
       this.$router.push({ name: 'instruments', params: { instrument } })
+    },
+    onSearch(e) {
+      e.preventDefault()
+
+      const { searchTerm } = this
+      const pathObj = { name: 'songs' }
+
+      if (searchTerm) {
+        pathObj.query = { q: searchTerm }
+      }
+      this.$router.push(pathObj)
+    },
+    clearSearch() {
+      if (!this.searchQuery) return
+      this.$router.push({ name: 'songs' })
     },
     logout() {
       this.$store.dispatch('authentication/logout')

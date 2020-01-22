@@ -8,7 +8,7 @@ import store from '@/store'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
-  faPen, faTrashAlt, faRocket, faTrashRestoreAlt, faCheck, faDrum, faGuitar, faBroom, faBox, faBoxOpen, faVolumeUp, faVolumeMute
+  faPen, faTrashAlt, faRocket, faTrashRestoreAlt, faCheck, faDrum, faGuitar, faBroom, faBox, faBoxOpen, faVolumeUp, faVolumeMute, faTimes
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
@@ -38,6 +38,7 @@ library.add(faBox)
 library.add(faBoxOpen)
 library.add(faVolumeUp)
 library.add(faVolumeMute)
+library.add(faTimes)
 
 Vue.config.productionTip = true
 

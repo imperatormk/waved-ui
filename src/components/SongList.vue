@@ -87,6 +87,7 @@ export default {
         })
     },
     getCriteria() {
+      const { q: searchTerm } = this.$route.query
       const { instrument, genresCriteria } = this
       const criteria = {}
 
@@ -95,6 +96,7 @@ export default {
       } else if (genresCriteria) {
         criteria.genres = genresCriteria
       }
+      if (searchTerm) criteria.q = searchTerm
       this.criteria = criteria
     },
     getSongs() {
@@ -104,7 +106,6 @@ export default {
         unpublished: false,
         feed
       }
-
       const { page, size } = this.pagination
 
       Api.getSongs({ page, size, order: 'DESC' }, criteriaObj)
