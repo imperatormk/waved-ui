@@ -13,6 +13,9 @@ export default {
     const searchTerm = this.searchQuery
     if (searchTerm) this.searchTerm = searchTerm
   },
+  data: () => ({
+    searchTerm: ''
+  }),
   computed: {
     searchQuery() {
       return this.$route.query.q

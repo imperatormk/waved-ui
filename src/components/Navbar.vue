@@ -5,7 +5,8 @@
     b-navbar-nav
       b-nav-item
         SearchBar
-    b-navbar-toggle(target="nav-collapse")
+    b-navbar-toggle(target="nav-collapse" @click="$refs['navbar-toggle-alt'].$el.click()")
+    b-navbar-toggle(ref="navbar-toggle-alt" target="nav-collapse-alt" style="display:none")
 
     b-collapse(id="nav-collapse" is-nav style="order:1")
       b-navbar-nav()
@@ -24,7 +25,7 @@
             v-if="instrument !== 'custom'"
             @click="gotoInstrument(instrument)") {{ instruments[instrument].title }}
 
-    b-collapse(id="nav-collapse" is-nav style="order:3")
+    b-collapse(id="nav-collapse-alt" is-nav style="order:3")
       b-navbar-nav.ml-auto
         b-nav-item-dropdown(v-if="loggedIn" right)
           template(slot="button-content") {{ loggedUser.username }}
@@ -48,10 +49,12 @@ export default {
   props: {
     logo: Object
   },
+  created() {
+    this.getGenres()
+  },
   data: () => ({
     instruments,
-    genres: [],
-    searchTerm: ''
+    genres: []
   }),
   computed: {
     loggedIn() {
