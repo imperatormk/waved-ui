@@ -6,10 +6,10 @@
       .flex-row.space-between.w100
         .flex-col.space-between
           .flex-col
-            h5 {{ song.title }}
+            .song-title {{ song.title }}
             span {{ song.artist }}
+        .flex-col.space-between.align-end
           span(style="color:#7f7f7f") {{ song.bpm }} BPM
-        .flex-row.align-end
           b-badge
             .fs14 €{{ song.price.toFixed(2) }}
 </template>
@@ -43,7 +43,7 @@ export default {
 <style lang="scss">
   .song-item {
     .song-thumbnail {
-      max-width: 100px;
+      max-width: 50px;
     }
   }
 </style>

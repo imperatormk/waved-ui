@@ -1,9 +1,11 @@
 <template lang="pug">
   .flex-col
     b-card-group
-      b-card(:header="criteriaType" no-body)
+      b-card(no-body)
         b-list-group
-          b-list-group-item(v-for="song in songs" :key="songs.id")
+          b-list-group-item.list-view-dense
+            .song-title {{ criteriaType }}
+          b-list-group-item.list-view-dense(v-for="song in songs" :key="songs.id")
             SongItem(:song="song")
         .fs18.p15(v-if="!songs.length")
           span Nothing to see here...
