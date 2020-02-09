@@ -9,7 +9,7 @@
           id="song-table"
           :items="songs"
           :busy="!loaded"
-          :per-page="pagination.size"
+          :per-page="pageSize"
           :current-page="1"
           :fields="songFields"
           show-empty
@@ -35,14 +35,24 @@
             span Nothing to see here...
           template(slot="table-busy")
             span Loading...
-        b-pagination(
-          v-if="totalElements > pagination.size"
-          v-model="pagination.page"
-          :total-rows="totalElements"
-          :per-page="pagination.size"
-          aria-controls="song-table"
-          @change="fetchDataDeferred"
-        )
+        .flex-row.space-between.align-center
+          div
+            b-pagination(
+              v-if="totalElements > pageSize"
+              v-model="pagination.page"
+              :total-rows="totalElements"
+              :per-page="pageSize"
+              aria-controls="song-table"
+              @change="fetchDataDeferred"
+            )
+          div
+            b-dropdown
+              template(v-slot:button-content)
+                span Per page: {{ pageSize }}
+              b-dropdown-item(
+                v-for="size in [10,20,50,100]"
+                :key="size"
+                @click="pagination.size = size") {{ size }}
     .m10
     b-card
       .flex-row.space-between.align-center(slot="header")
@@ -97,10 +107,15 @@ export default {
   created() {
     this.fetchData()
   },
+  watch: {
+    pageSize() {
+      this.fetchDataDeferred()
+    }
+  },
   data: () => ({
     pagination: {
       page: 1,
-      size: 10
+      size: 100
     },
     totalElements: 0,
     songFields: [
@@ -251,6 +266,9 @@ export default {
       const logo = this.logoConfig
       if (!logo) return null
       return logo.file ? logo.value : `${serverUrl}/static/system/${logo.value}`
+    },
+    pageSize() {
+      return this.pagination.size
     }
   },
   components: {
