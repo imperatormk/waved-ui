@@ -115,7 +115,8 @@ export default {
   data: () => ({
     pagination: {
       page: 1,
-      size: 100
+      size: 100,
+      by: 'title'
     },
     totalElements: 0,
     songFields: [
